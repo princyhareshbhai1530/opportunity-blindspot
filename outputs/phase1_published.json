@@ -1,0 +1,10 @@
+{
+  "_note": "Figures transcribed from the submitted Phase 1 PDF (Opportunity_Blindspot_Phase1.pdf, pages 2-4). They are Phase 1 published results, not Phase 2 outputs. The Phase 1 code was not available; the rebuild is in phase1_reproduction.json.",
+  "gap_pp": 5.45,
+  "gap_ci_low": 4.80,
+  "gap_ci_high": 6.13,
+  "senior_pct": 22.0,
+  "entry_pct": 16.6,
+  "seed": 20261016,
+  "n_pairs": 1200
+}

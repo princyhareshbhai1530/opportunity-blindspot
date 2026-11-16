@@ -1,0 +1,806 @@
+{
+  "meta": {
+    "dataset": "JTH v1.1",
+    "seed": 20261115,
+    "n_pairs": 1200,
+    "n_heldout": 3769,
+    "bootstrap": 3000,
+    "pool_size": 100,
+    "topk": 10,
+    "hist_k": 5,
+    "betas": [
+      "0.00",
+      "0.15",
+      "0.30",
+      "0.45",
+      "0.60"
+    ],
+    "beta_default": "0.45"
+  },
+  "twins": {
+    "pair_index": 0,
+    "pool_size": 100,
+    "history_A": [
+      "Senior backend developer",
+      "Senior full stack developer",
+      "Senior backend developer",
+      "Senior full stack developer",
+      "Senior backend developer"
+    ],
+    "history_B": [
+      "Junior frontend developer",
+      "Junior full stack developer",
+      "Junior backend developer",
+      "Junior backend developer",
+      "Junior backend developer"
+    ],
+    "feed_profile": [
+      {
+        "title": "Senior full stack developer",
+        "salary_band": "EUR 50k to 55k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": false,
+        "seniority": "Senior",
+        "match": 0.589,
+        "profile_rank": 1,
+        "high_value": false,
+        "id": 1656,
+        "rank_profile": 1,
+        "rank_A": 1,
+        "rank_B": 2,
+        "missed_by_B": false
+      },
+      {
+        "title": "Mid backend developer",
+        "salary_band": "EUR 45k to 50k",
+        "salary_source": "LLM estimate",
+        "contract": "Freelance",
+        "remote": false,
+        "seniority": "Mid",
+        "match": 0.576,
+        "profile_rank": 2,
+        "high_value": false,
+        "id": 1142,
+        "rank_profile": 2,
+        "rank_A": 2,
+        "rank_B": 1,
+        "missed_by_B": false
+      },
+      {
+        "title": "Mid backend developer",
+        "salary_band": "EUR 55k to 60k",
+        "salary_source": "LLM estimate",
+        "contract": "Freelance",
+        "remote": true,
+        "seniority": "Mid",
+        "match": 0.526,
+        "profile_rank": 3,
+        "high_value": false,
+        "id": 3734,
+        "rank_profile": 3,
+        "rank_A": 12,
+        "rank_B": 12,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior software engineer",
+        "salary_band": "EUR 75k to 80k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": true,
+        "seniority": "Senior",
+        "match": 0.522,
+        "profile_rank": 4,
+        "high_value": true,
+        "id": 834,
+        "rank_profile": 4,
+        "rank_A": 3,
+        "rank_B": 6,
+        "missed_by_B": false
+      },
+      {
+        "title": "Mid full stack developer",
+        "salary_band": "EUR 60k to 65k",
+        "salary_source": "LLM estimate",
+        "contract": "Freelance",
+        "remote": true,
+        "seniority": "Mid",
+        "match": 0.521,
+        "profile_rank": 5,
+        "high_value": false,
+        "id": 2440,
+        "rank_profile": 5,
+        "rank_A": 19,
+        "rank_B": 24,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior backend developer",
+        "salary_band": "EUR 60k to 65k",
+        "salary_source": "LLM estimate",
+        "contract": "Freelance",
+        "remote": false,
+        "seniority": "Senior",
+        "match": 0.518,
+        "profile_rank": 6,
+        "high_value": false,
+        "id": 2165,
+        "rank_profile": 6,
+        "rank_A": 6,
+        "rank_B": 13,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior full stack developer",
+        "salary_band": "EUR 65k to 70k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": true,
+        "seniority": "Senior",
+        "match": 0.517,
+        "profile_rank": 7,
+        "high_value": true,
+        "id": 2384,
+        "rank_profile": 7,
+        "rank_A": 10,
+        "rank_B": 21,
+        "missed_by_B": true
+      },
+      {
+        "title": "Mid full stack developer",
+        "salary_band": "EUR 50k to 55k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": false,
+        "seniority": "Mid",
+        "match": 0.516,
+        "profile_rank": 8,
+        "high_value": false,
+        "id": 4751,
+        "rank_profile": 8,
+        "rank_A": 9,
+        "rank_B": 19,
+        "missed_by_B": false
+      },
+      {
+        "title": "Mid full stack developer",
+        "salary_band": "EUR 50k to 55k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": true,
+        "seniority": "Mid",
+        "match": 0.514,
+        "profile_rank": 9,
+        "high_value": false,
+        "id": 3752,
+        "rank_profile": 9,
+        "rank_A": 14,
+        "rank_B": 9,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior full stack developer",
+        "salary_band": "EUR 50k to 55k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": true,
+        "seniority": "Senior",
+        "match": 0.514,
+        "profile_rank": 10,
+        "high_value": false,
+        "id": 5753,
+        "rank_profile": 10,
+        "rank_A": 11,
+        "rank_B": 25,
+        "missed_by_B": false
+      }
+    ],
+    "feed_A": [
+      {
+        "title": "Senior full stack developer",
+        "salary_band": "EUR 50k to 55k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": false,
+        "seniority": "Senior",
+        "match": 0.589,
+        "profile_rank": 1,
+        "high_value": false,
+        "id": 1656,
+        "rank_profile": 1,
+        "rank_A": 1,
+        "rank_B": 2,
+        "missed_by_B": false
+      },
+      {
+        "title": "Mid backend developer",
+        "salary_band": "EUR 45k to 50k",
+        "salary_source": "LLM estimate",
+        "contract": "Freelance",
+        "remote": false,
+        "seniority": "Mid",
+        "match": 0.576,
+        "profile_rank": 2,
+        "high_value": false,
+        "id": 1142,
+        "rank_profile": 2,
+        "rank_A": 2,
+        "rank_B": 1,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior software engineer",
+        "salary_band": "EUR 75k to 80k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": true,
+        "seniority": "Senior",
+        "match": 0.522,
+        "profile_rank": 4,
+        "high_value": true,
+        "id": 834,
+        "rank_profile": 4,
+        "rank_A": 3,
+        "rank_B": 6,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior full stack developer",
+        "salary_band": "EUR 70k to 75k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": false,
+        "seniority": "Senior",
+        "match": 0.51,
+        "profile_rank": 13,
+        "high_value": false,
+        "id": 119,
+        "rank_profile": 13,
+        "rank_A": 4,
+        "rank_B": 8,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior backend developer",
+        "salary_band": "EUR 50k to 55k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": false,
+        "seniority": "Senior",
+        "match": 0.505,
+        "profile_rank": 16,
+        "high_value": false,
+        "id": 466,
+        "rank_profile": 16,
+        "rank_A": 5,
+        "rank_B": 7,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior backend developer",
+        "salary_band": "EUR 60k to 65k",
+        "salary_source": "LLM estimate",
+        "contract": "Freelance",
+        "remote": false,
+        "seniority": "Senior",
+        "match": 0.518,
+        "profile_rank": 6,
+        "high_value": false,
+        "id": 2165,
+        "rank_profile": 6,
+        "rank_A": 6,
+        "rank_B": 13,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior full stack developer",
+        "salary_band": "EUR 55k to 60k",
+        "salary_source": "LLM estimate",
+        "contract": "Freelance",
+        "remote": true,
+        "seniority": "Senior",
+        "match": 0.506,
+        "profile_rank": 15,
+        "high_value": false,
+        "id": 757,
+        "rank_profile": 15,
+        "rank_A": 7,
+        "rank_B": 28,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior backend developer",
+        "salary_band": "EUR 65k to 70k",
+        "salary_source": "LLM estimate",
+        "contract": "Freelance",
+        "remote": true,
+        "seniority": "Senior",
+        "match": 0.495,
+        "profile_rank": 20,
+        "high_value": false,
+        "id": 973,
+        "rank_profile": 20,
+        "rank_A": 8,
+        "rank_B": 54,
+        "missed_by_B": false
+      },
+      {
+        "title": "Mid full stack developer",
+        "salary_band": "EUR 50k to 55k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": false,
+        "seniority": "Mid",
+        "match": 0.516,
+        "profile_rank": 8,
+        "high_value": false,
+        "id": 4751,
+        "rank_profile": 8,
+        "rank_A": 9,
+        "rank_B": 19,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior full stack developer",
+        "salary_band": "EUR 65k to 70k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": true,
+        "seniority": "Senior",
+        "match": 0.517,
+        "profile_rank": 7,
+        "high_value": true,
+        "id": 2384,
+        "rank_profile": 7,
+        "rank_A": 10,
+        "rank_B": 21,
+        "missed_by_B": true
+      }
+    ],
+    "feed_B": [
+      {
+        "title": "Mid backend developer",
+        "salary_band": "EUR 45k to 50k",
+        "salary_source": "LLM estimate",
+        "contract": "Freelance",
+        "remote": false,
+        "seniority": "Mid",
+        "match": 0.576,
+        "profile_rank": 2,
+        "high_value": false,
+        "id": 1142,
+        "rank_profile": 2,
+        "rank_A": 2,
+        "rank_B": 1,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior full stack developer",
+        "salary_band": "EUR 50k to 55k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": false,
+        "seniority": "Senior",
+        "match": 0.589,
+        "profile_rank": 1,
+        "high_value": false,
+        "id": 1656,
+        "rank_profile": 1,
+        "rank_A": 1,
+        "rank_B": 2,
+        "missed_by_B": false
+      },
+      {
+        "title": "Junior full stack developer",
+        "salary_band": "EUR 35k to 40k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": false,
+        "seniority": "Junior",
+        "match": 0.497,
+        "profile_rank": 19,
+        "high_value": false,
+        "id": 1369,
+        "rank_profile": 19,
+        "rank_A": 13,
+        "rank_B": 3,
+        "missed_by_B": false
+      },
+      {
+        "title": "Junior backend developer",
+        "salary_band": "EUR 25k to 30k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": true,
+        "seniority": "Junior",
+        "match": 0.512,
+        "profile_rank": 11,
+        "high_value": false,
+        "id": 666,
+        "rank_profile": 11,
+        "rank_A": 15,
+        "rank_B": 4,
+        "missed_by_B": false
+      },
+      {
+        "title": "Junior backend developer",
+        "salary_band": "EUR 35k to 40k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": true,
+        "seniority": "Junior",
+        "match": 0.512,
+        "profile_rank": 12,
+        "high_value": false,
+        "id": 688,
+        "rank_profile": 12,
+        "rank_A": 16,
+        "rank_B": 5,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior software engineer",
+        "salary_band": "EUR 75k to 80k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": true,
+        "seniority": "Senior",
+        "match": 0.522,
+        "profile_rank": 4,
+        "high_value": true,
+        "id": 834,
+        "rank_profile": 4,
+        "rank_A": 3,
+        "rank_B": 6,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior backend developer",
+        "salary_band": "EUR 50k to 55k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": false,
+        "seniority": "Senior",
+        "match": 0.505,
+        "profile_rank": 16,
+        "high_value": false,
+        "id": 466,
+        "rank_profile": 16,
+        "rank_A": 5,
+        "rank_B": 7,
+        "missed_by_B": false
+      },
+      {
+        "title": "Senior full stack developer",
+        "salary_band": "EUR 70k to 75k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": false,
+        "seniority": "Senior",
+        "match": 0.51,
+        "profile_rank": 13,
+        "high_value": false,
+        "id": 119,
+        "rank_profile": 13,
+        "rank_A": 4,
+        "rank_B": 8,
+        "missed_by_B": false
+      },
+      {
+        "title": "Mid full stack developer",
+        "salary_band": "EUR 50k to 55k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": true,
+        "seniority": "Mid",
+        "match": 0.514,
+        "profile_rank": 9,
+        "high_value": false,
+        "id": 3752,
+        "rank_profile": 9,
+        "rank_A": 14,
+        "rank_B": 9,
+        "missed_by_B": false
+      },
+      {
+        "title": "Mid software engineer",
+        "salary_band": "EUR 45k to 50k",
+        "salary_source": "posted",
+        "contract": "Permanent",
+        "remote": false,
+        "seniority": "Mid",
+        "match": 0.507,
+        "profile_rank": 14,
+        "high_value": false,
+        "id": 3501,
+        "rank_profile": 14,
+        "rank_A": 18,
+        "rank_B": 10,
+        "missed_by_B": false
+      }
+    ],
+    "missed": {
+      "title": "Senior full stack developer",
+      "salary_band": "EUR 65k to 70k",
+      "salary_source": "posted",
+      "contract": "Permanent",
+      "remote": true,
+      "seniority": "Senior",
+      "match": 0.517,
+      "profile_rank": 7,
+      "high_value": true,
+      "id": 2384,
+      "rank_profile": 7,
+      "rank_A": 10,
+      "rank_B": 21,
+      "missed_by_B": true
+    },
+    "n_missed": 1,
+    "n_with_blindspot": 549,
+    "n_twins": 1200
+  },
+  "per_beta": {
+    "0.00": {
+      "TEG_pp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "placebo_pp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hv_A_pct": [
+        18.875,
+        18.133125,
+        19.625
+      ],
+      "hv_B_pct": [
+        18.875,
+        18.099791666666665,
+        19.666666666666664
+      ],
+      "blindspot_rate_pct": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mobility_exposure_pct": [
+        46.85833333333333,
+        45.558125,
+        48.125416666666666
+      ],
+      "compat_cost_pct": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hit10_pct": [
+        5.412576280180419,
+        4.722738126824091,
+        6.128946670204298
+      ]
+    },
+    "0.15": {
+      "TEG_pp": [
+        1.2083333333333333,
+        0.8747916666666666,
+        1.5333333333333332
+      ],
+      "placebo_pp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hv_A_pct": [
+        19.633333333333336,
+        18.891458333333333,
+        20.433541666666667
+      ],
+      "hv_B_pct": [
+        18.425000000000004,
+        17.666458333333335,
+        19.200208333333336
+      ],
+      "blindspot_rate_pct": [
+        15.416666666666668,
+        13.333333333333334,
+        17.5
+      ],
+      "mobility_exposure_pct": [
+        46.09166666666667,
+        44.76666666666667,
+        47.38333333333333
+      ],
+      "compat_cost_pct": [
+        0.11315515418400812,
+        0.10573421783052817,
+        0.12114763725064898
+      ],
+      "hit10_pct": [
+        5.810559830193685,
+        5.067657203502256,
+        6.553462456885115
+      ]
+    },
+    "0.30": {
+      "TEG_pp": [
+        3.108333333333333,
+        2.591666666666667,
+        3.6333333333333337
+      ],
+      "placebo_pp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hv_A_pct": [
+        20.525000000000002,
+        19.691458333333337,
+        21.33354166666667
+      ],
+      "hv_B_pct": [
+        17.416666666666668,
+        16.64166666666667,
+        18.175
+      ],
+      "blindspot_rate_pct": [
+        31.5,
+        28.916666666666668,
+        34.08333333333333
+      ],
+      "mobility_exposure_pct": [
+        44.99166666666666,
+        43.76666666666667,
+        46.233333333333334
+      ],
+      "compat_cost_pct": [
+        0.621286539653576,
+        0.5903214792818848,
+        0.6557447622535661
+      ],
+      "hit10_pct": [
+        6.633059166887769,
+        5.863624303528788,
+        7.455558503581852
+      ]
+    },
+    "0.45": {
+      "TEG_pp": [
+        5.25,
+        4.508333333333334,
+        5.949999999999999
+      ],
+      "placebo_pp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hv_A_pct": [
+        21.766666666666666,
+        20.925,
+        22.608541666666667
+      ],
+      "hv_B_pct": [
+        16.51666666666667,
+        15.74166666666667,
+        17.258333333333333
+      ],
+      "blindspot_rate_pct": [
+        45.75,
+        42.833333333333336,
+        48.583333333333336
+      ],
+      "mobility_exposure_pct": [
+        42.56666666666667,
+        41.333333333333336,
+        43.791666666666664
+      ],
+      "compat_cost_pct": [
+        2.0248860996778584,
+        1.9373417043143937,
+        2.114811819081305
+      ],
+      "hit10_pct": [
+        7.90660652693022,
+        7.110639426903688,
+        8.755638100291854
+      ]
+    },
+    "0.60": {
+      "TEG_pp": [
+        8.066666666666666,
+        7.133125,
+        9.016666666666666
+      ],
+      "placebo_pp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hv_A_pct": [
+        23.291666666666664,
+        22.39166666666667,
+        24.175208333333334
+      ],
+      "hv_B_pct": [
+        15.225,
+        14.51666666666667,
+        15.950208333333336
+      ],
+      "blindspot_rate_pct": [
+        59.0,
+        56.331250000000004,
+        61.75000000000001
+      ],
+      "mobility_exposure_pct": [
+        38.48333333333333,
+        37.266458333333325,
+        39.63354166666667
+      ],
+      "compat_cost_pct": [
+        4.983744843031424,
+        4.799413497371496,
+        5.179617536476392
+      ],
+      "hit10_pct": [
+        15.919342000530644,
+        14.751923587158398,
+        17.113292650570443
+      ]
+    }
+  },
+  "h1_gain_pp": [
+    2.494030246749801,
+    1.9103210400636774,
+    3.104271690103476
+  ],
+  "defaults": {
+    "TEG_pp": 2.62,
+    "blindspot_rate_pct": 22.9,
+    "mobility_drop_pp": 2.14,
+    "compat_cost_pct": 2.0
+  },
+  "fix_criteria": {
+    "gap_cut_min_pct": 50.0,
+    "compat_max_pct": 2.0,
+    "hit10_kept_min_pct": 75.0
+  },
+  "fixes": [
+    {
+      "name": "History cap",
+      "setting": "beta 0.3 for high-value roles",
+      "gap_cut_pct": 75.39682539682539,
+      "compat_cost_pct": 1.815262028788578,
+      "hit10_kept_pct": 71.27659574468088,
+      "pass_gap": true,
+      "pass_compat": true,
+      "pass_hit": false,
+      "pass": false
+    },
+    {
+      "name": "Profile floor",
+      "setting": "keep profile matches scoring at least 0.7",
+      "gap_cut_pct": 34.285714285714285,
+      "compat_cost_pct": 1.2128193578389124,
+      "hit10_kept_pct": 78.72340425531917,
+      "pass_gap": false,
+      "pass_compat": true,
+      "pass_hit": true,
+      "pass": false
+    },
+    {
+      "name": "Exploration slots",
+      "setting": "3 of 10 slots for roles outside the history",
+      "gap_cut_pct": 66.82539682539682,
+      "compat_cost_pct": 1.920191873677124,
+      "hit10_kept_pct": 45.74468085106386,
+      "pass_gap": true,
+      "pass_compat": true,
+      "pass_hit": false,
+      "pass": false
+    }
+  ]
+}

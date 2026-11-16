@@ -1,0 +1,27 @@
+{
+  "pool_entries": 120000,
+  "pool_imputed": 41284,
+  "pool_imputed_pct": 34.403333333333336,
+  "hv_entries": 24177,
+  "hv_imputed": 885,
+  "hv_imputed_pct": 3.6605037845886583,
+  "jobs_total": 6011,
+  "jobs_imputed": 2054,
+  "jobs_imputed_pct": 34.17068707369822,
+  "exclude_imputed_from_hv": {
+    "TEG_pp": 4.033333333333333,
+    "ci_low": 3.4166666666666665,
+    "ci_high": 4.658333333333333,
+    "n": 1200,
+    "perm_p": 9.999000099990002e-05
+  },
+  "posted_salary_only": {
+    "TEG_pp": 5.916666666666667,
+    "ci_low": 5.2247916666666665,
+    "ci_high": 6.608333333333333,
+    "n": 1200,
+    "perm_p": 9.999000099990002e-05,
+    "pairs_dropped_lt_min_posted": 0
+  },
+  "min_posted": 20
+}

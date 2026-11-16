@@ -1,0 +1,7 @@
+metric,beta,condition,estimate,ci_low,ci_high,n,set
+imputed_salary_share_pool_pct,0.45,matched_pool_entries,34.403333333333336,,,120000,test
+imputed_salary_share_hv_pct,0.45,primary_high_value_entries,3.6605037845886583,,,24177,test
+TEG_pp,0.45,exclude_imputed_from_hv,4.033333333333333,3.4166666666666665,4.658333333333333,1200,test
+TEG_permutation_p,0.45,exclude_imputed_from_hv,9.999000099990002e-05,,,1200,test
+TEG_pp,0.45,posted_salary_only,5.916666666666667,5.2247916666666665,6.608333333333333,1200,test
+TEG_permutation_p,0.45,posted_salary_only,9.999000099990002e-05,,,1200,test
