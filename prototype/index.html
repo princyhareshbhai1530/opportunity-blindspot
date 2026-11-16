@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Opportunity Blindspot Audit</title>
+<style>
+:root{
+  --navy:#071A2B; --ink:#10283F; --ink2:#5B6B7C; --muted:#8696A7;
+  --card:#F3F7FB; --line:#DCE6F0; --bg:#FFFFFF;
+  --blue:#1A6FE0; --coral:#F25C6A; --teal:#2EC4D0; --green:#1A9E6E; --amber:#FFB000;
+  --pass-bg:#E7F6EF; --fail-bg:#FDECEE; --fail-ink:#B3261E; --pass-ink:#146C4B;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45}
+header.top{background:var(--navy);color:#fff;padding:22px 32px}
+header.top .lab{color:var(--teal);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+header.top h1{margin:4px 0 2px;font-size:26px;letter-spacing:.01em;text-transform:uppercase}
+header.top p{margin:0;color:#B9C7D6;font-size:13.5px}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:24px;padding:24px 32px 32px;max-width:1480px;margin:0 auto}
+@media (max-width:980px){main{grid-template-columns:minmax(0,1fr);padding:16px}}
+@media (max-width:640px){header.top{padding:18px 16px}.panel{padding:16px}.seg{display:flex}.seg button{flex:1;padding:7px 8px}.fxwrap{overflow-x:auto}footer{padding:0 16px 20px}}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 24px}
+.plab{color:var(--blue);font-weight:700;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
+.panel h2{margin:4px 0 4px;font-size:22px;color:var(--ink)}
+.sub{color:var(--ink2);font-size:13.5px;margin:0 0 14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px;color:var(--ink2)}
+.alert{border:1px solid #F7C3C9;background:#FFF5F6;border-left:6px solid var(--coral);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+.alert .big{font-size:18px;font-weight:700;color:var(--ink)}
+.alert .big b{color:var(--coral);font-size:22px}
+.btn{appearance:none;border:0;background:var(--ink);color:#fff;border-radius:10px;padding:8px 14px;font-weight:700;font-size:13.5px;cursor:pointer;margin-top:10px}
+.btn:focus-visible,.seg button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.missed{display:none;margin-top:12px;gap:10px;flex-direction:column}
+.missed.show{display:flex}
+.job{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.job .t{font-weight:700;font-size:15px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink2);margin-top:4px}
+.meta span b{color:var(--ink)}
+.matchbar{height:6px;border-radius:4px;background:var(--line);margin-top:8px;overflow:hidden}
+.matchbar i{display:block;height:100%;background:var(--green);border-radius:4px}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:3px;margin:6px 0 10px}
+.seg button{border:0;background:transparent;padding:7px 14px;border-radius:9px;font-weight:700;font-size:13px;color:var(--ink2);cursor:pointer}
+.seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(16,40,63,.15)}
+ol.feed{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+ol.feed li{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 12px;border-top:1px solid var(--line);font-size:13px}
+ol.feed li:first-child{border-top:0}
+ol.feed li .n{color:var(--muted);font-weight:700}
+ol.feed li .s{color:var(--ink2);font-size:12px}
+ol.feed li.hl{background:#FFF5F6}
+ol.feed li.add{background:#F4F8FF}
+.tag{font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.tag.miss{background:var(--fail-bg);color:var(--fail-ink)}
+.tag.add{background:#E6EFFC;color:#1557B0}
+.tag.hv{background:#FFF4D6;color:#7A5300}
+.caption{font-size:12px;color:var(--ink2);margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+/* scorecard */
+.slider{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:14px}
+.slider .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.slider .bv{font-size:20px;font-weight:800;color:var(--ink)}
+.slider input[type=range]{width:100%;accent-color:var(--blue);margin:8px 0 2px}
+.ticks{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink2)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.cols{grid-template-columns:1fr}}
+.colh{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:0 0 8px}
+.colh.ex{color:var(--coral)} .colh.co{color:var(--green)}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.tile .nm{font-weight:700;font-size:13.5px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.tile .val{font-size:28px;font-weight:800;margin-top:2px;color:var(--ink)}
+.tile .ci{font-size:12px;color:var(--ink2)}
+.tile .def{font-size:12px;color:var(--ink2);margin-top:4px}
+.badge{font-size:11.5px;font-weight:800;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.badge.pass{background:var(--pass-bg);color:var(--pass-ink)}
+.badge.fail{background:var(--fail-bg);color:var(--fail-ink)}
+.badge.info{background:#E6EFFC;color:#1557B0}
+.thr{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:6px}
+@media (max-width:640px){.thr{grid-template-columns:1fr 1fr}}
+.thr label{font-size:11.5px;color:var(--ink2);display:flex;flex-direction:column;gap:4px}
+.thr input{font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;width:100%;color:var(--ink)}
+.verdict{border-radius:12px;padding:10px 14px;font-weight:700;margin:4px 0 12px;font-size:14px}
+.verdict.fail{background:var(--fail-bg);color:var(--fail-ink)} .verdict.pass{background:var(--pass-bg);color:var(--pass-ink)}
+table.fx{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+table.fx th,table.fx td{text-align:left;padding:6px 8px;border-top:1px solid var(--line)}
+table.fx th{color:var(--ink2);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em}
+h3{font-size:13px;margin:16px 0 4px;color:var(--ink);text-transform:uppercase;letter-spacing:.06em}
+footer{color:var(--ink2);font-size:12px;padding:0 32px 24px;max-width:1480px;margin:0 auto}footer p{margin:0 0 4px}footer .lic{font-weight:700;color:var(--ink)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="lab">The Opportunity Blindspot | Phase 2 prototype</div>
+  <h1>Opportunity Blindspot Audit</h1>
+  <p>Controlled simulation on the public JTH v1.1 dataset. Not an audit of a real platform. All numbers are precomputed from the test set.</p>
+</header>
+<main>
+  <section class="panel" id="receipt" aria-labelledby="rh">
+    <div class="plab">Panel A | Job seeker view</div>
+    <h2 id="rh">Your Opportunity Receipt</h2>
+    <p class="sub">Your feed was personalized using your recent activity:</p>
+    <div class="chips" id="hist"></div>
+    <div class="alert">
+      <div class="big" id="msg"></div>
+      <button class="btn" id="showbtn" aria-expanded="false" aria-controls="missed"></button>
+      <div class="missed" id="missed"></div>
+    </div>
+    <div class="seg" role="group" aria-label="Feed ranking">
+      <button id="bPers" aria-pressed="true">Personalized</button>
+      <button id="bProf" aria-pressed="false">Rank by my profile only</button>
+    </div>
+    <ol class="feed" id="feed" aria-live="polite"></ol>
+    <p class="caption" id="rcap"></p>
+  </section>
+
+  <section class="panel" id="scorecard" aria-labelledby="sh">
+    <div class="plab">Panel B | Operator and regulator view</div>
+    <h2 id="sh">Operator Audit Scorecard</h2>
+    <p class="sub" id="ssub"></p>
+    <div class="slider">
+      <div class="row"><span>History weight in the ranking</span><span class="bv" id="bval"></span></div>
+      <input type="range" id="beta" min="0" max="4" step="1" value="3" aria-label="History weight beta">
+      <div class="ticks"><span>0 (profile only)</span><span>0.15</span><span>0.30</span><span>0.45</span><span>0.60</span></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <div class="cols">
+      <div><p class="colh ex">Exposure</p><div id="exp"></div></div>
+      <div><p class="colh co">Compatibility</p><div id="comp"></div></div>
+    </div>
+    <h3>Thresholds (to be set with job seekers)</h3>
+    <div class="thr" id="thr"></div>
+    <p class="caption" id="thrcap"></p>
+    <h3>Tested fixes (test set, tuned on tune set)</h3>
+    <div class="fxwrap"><table class="fx" id="fx"></table></div>
+  </section>
+</main>
+<footer><p class="lic">Data: JTH v1.1, CC BY-NC 4.0. Non-commercial research prototype.</p><p id="foot"></p></footer>
+<script>
+const DATA = {"receipt": {"pair_index": 0, "n_missed": 1, "median_rule_value": 1, "n_with_blindspot": 549, "n_twins": 1200, "history_labels": ["Junior frontend developer", "Junior full stack developer", "Junior backend developer", "Junior backend developer", "Junior backend developer"], "missed": [{"title": "Senior full stack developer", "salary_band": "EUR 65k to 70k", "salary_source": "posted", "contract": "Permanent", "remote": true, "seniority": "Senior", "match": 0.517, "profile_rank": 7, "high_value": true, "personalized_rank": 21}], "feed_profile": [{"title": "Senior full stack developer", "salary_band": "EUR 50k to 55k", "salary_source": "posted", "contract": "Permanent", "remote": false, "seniority": "Senior", "match": 0.589, "profile_rank": 1, "high_value": false, "missed": false, "new_in_personalized": false}, {"title": "Mid backend developer", "salary_band": "EUR 45k to 50k", "salary_source": "LLM estimate", "contract": "Freelance", "remote": false, "seniority": "Mid", "match": 0.576, "profile_rank": 2, "high_value": false, "missed": false, "new_in_personalized": false}, {"title": "Mid backend developer", "salary_band": "EUR 55k to 60k", "salary_source": "LLM estimate", "contract": "Freelance", "remote": true, "seniority": "Mid", "match": 0.526, "profile_rank": 3, "high_value": false, "missed": false, "new_in_personalized": false}, {"title": "Senior software engineer", "salary_band": "EUR 75k to 80k", "salary_source": "posted", "contract": "Permanent", "remote": true, "seniority": "Senior", "match": 0.522, "profile_rank": 4, "high_value": true, "missed": false, "new_in_personalized": false}, {"title": "Mid full stack developer", "salary_band": "EUR 60k to 65k", "salary_source": "LLM estimate", "contract": "Freelance", "remote": true, "seniority": "Mid", "match": 0.521, "profile_rank": 5, "high_value": false, "missed": false, "new_in_personalized": false}, {"title": "Senior backend developer", "salary_band": "EUR 60k to 65k", "salary_source": "LLM estimate", "contract": "Freelance", "remote": false, "seniority": "Senior", "match": 0.518, "profile_rank": 6, "high_value": false, "missed": false, "new_in_personalized": false}, {"title": "Senior full stack developer", "salary_band": "EUR 65k to 70k", "salary_source": "posted", "contract": "Permanent", "remote": true, "seniority": "Senior", "match": 0.517, "profile_rank": 7, "high_value": true, "missed": true, "new_in_personalized": false}, {"title": "Mid full stack developer", "salary_band": "EUR 50k to 55k", "salary_source": "posted", "contract": "Permanent", "remote": false, "seniority": "Mid", "match": 0.516, "profile_rank": 8, "high_value": false, "missed": false, "new_in_personalized": false}, {"title": "Mid full stack developer", "salary_band": "EUR 50k to 55k", "salary_source": "posted", "contract": "Permanent", "remote": true, "seniority": "Mid", "match": 0.514, "profile_rank": 9, "high_value": false, "missed": false, "new_in_personalized": false}, {"title": "Senior full stack developer", "salary_band": "EUR 50k to 55k", "salary_source": "posted", "contract": "Permanent", "remote": true, "seniority": "Senior", "match": 0.514, "profile_rank": 10, "high_value": false, "missed": false, "new_in_personalized": false}], "feed_personalized": [{"title": "Mid backend developer", "salary_band": "EUR 45k to 50k", "salary_source": "LLM estimate", "contract": "Freelance", "remote": false, "seniority": "Mid", "match": 0.576, "profile_rank": 2, "high_value": false, "missed": false, "new_in_personalized": false}, {"title": "Senior full stack developer", "salary_band": "EUR 50k to 55k", "salary_source": "posted", "contract": "Permanent", "remote": false, "seniority": "Senior", "match": 0.589, "profile_rank": 1, "high_value": false, "missed": false, "new_in_personalized": false}, {"title": "Junior full stack developer", "salary_band": "EUR 35k to 40k", "salary_source": "posted", "contract": "Permanent", "remote": false, "seniority": "Junior", "match": 0.497, "profile_rank": 19, "high_value": false, "missed": false, "new_in_personalized": true}, {"title": "Junior backend developer", "salary_band": "EUR 25k to 30k", "salary_source": "posted", "contract": "Permanent", "remote": true, "seniority": "Junior", "match": 0.512, "profile_rank": 11, "high_value": false, "missed": false, "new_in_personalized": true}, {"title": "Junior backend developer", "salary_band": "EUR 35k to 40k", "salary_source": "posted", "contract": "Permanent", "remote": true, "seniority": "Junior", "match": 0.512, "profile_rank": 12, "high_value": false, "missed": false, "new_in_personalized": true}, {"title": "Senior software engineer", "salary_band": "EUR 75k to 80k", "salary_source": "posted", "contract": "Permanent", "remote": true, "seniority": "Senior", "match": 0.522, "profile_rank": 4, "high_value": true, "missed": false, "new_in_personalized": false}, {"title": "Senior backend developer", "salary_band": "EUR 50k to 55k", "salary_source": "posted", "contract": "Permanent", "remote": false, "seniority": "Senior", "match": 0.505, "profile_rank": 16, "high_value": false, "missed": false, "new_in_personalized": true}, {"title": "Senior full stack developer", "salary_band": "EUR 70k to 75k", "salary_source": "posted", "contract": "Permanent", "remote": false, "seniority": "Senior", "match": 0.51, "profile_rank": 13, "high_value": false, "missed": false, "new_in_personalized": true}, {"title": "Mid full stack developer", "salary_band": "EUR 50k to 55k", "salary_source": "posted", "contract": "Permanent", "remote": true, "seniority": "Mid", "match": 0.514, "profile_rank": 9, "high_value": false, "missed": false, "new_in_personalized": false}, {"title": "Mid software engineer", "salary_band": "EUR 45k to 50k", "salary_source": "posted", "contract": "Permanent", "remote": false, "seniority": "Mid", "match": 0.507, "profile_rank": 14, "high_value": false, "missed": false, "new_in_personalized": true}]}, "scorecard": {"per_beta": {"0.00": {"TEG_pp": [0.0, 0.0, 0.0], "blindspot_rate_pct": [0.0, 0.0, 0.0], "mobility_exposure_pct": [46.86, 45.56, 48.13], "compat_cost_pct": [0.0, 0.0, 0.0], "heldout_hit10": [5.41, 4.72, 6.13]}, "0.15": {"TEG_pp": [1.21, 0.87, 1.53], "blindspot_rate_pct": [15.42, 13.33, 17.5], "mobility_exposure_pct": [46.09, 44.77, 47.38], "compat_cost_pct": [0.11, 0.11, 0.12], "heldout_hit10": [5.81, 5.07, 6.55]}, "0.30": {"TEG_pp": [3.11, 2.59, 3.63], "blindspot_rate_pct": [31.5, 28.92, 34.08], "mobility_exposure_pct": [44.99, 43.77, 46.23], "compat_cost_pct": [0.62, 0.59, 0.66], "heldout_hit10": [6.63, 5.86, 7.46]}, "0.45": {"TEG_pp": [5.25, 4.51, 5.95], "blindspot_rate_pct": [45.75, 42.83, 48.58], "mobility_exposure_pct": [42.57, 41.33, 43.79], "compat_cost_pct": [2.02, 1.94, 2.11], "heldout_hit10": [7.91, 7.11, 8.76]}, "0.60": {"TEG_pp": [8.07, 7.13, 9.02], "blindspot_rate_pct": [59.0, 56.33, 61.75], "mobility_exposure_pct": [38.48, 37.27, 39.63], "compat_cost_pct": [4.98, 4.8, 5.18], "heldout_hit10": [15.92, 14.75, 17.11]}}, "mobility_beta0": 46.86, "defaults": {"TEG_pp": 2.62, "blindspot_rate_pct": 22.9, "mobility_drop_pp": 2.14, "compat_cost_pct": 2.0}, "fixes": [{"label": "history_cap=0.3", "method": "history_cap", "TEG_reduction_pct": 75.4, "compat_cost_pct": 1.82, "hit10_retained_pct": 71.3, "pass": false}, {"label": "profile_floor=0.7", "method": "profile_floor", "TEG_reduction_pct": 34.3, "compat_cost_pct": 1.21, "hit10_retained_pct": 78.7, "pass": false}, {"label": "exploration=3", "method": "exploration", "TEG_reduction_pct": 66.8, "compat_cost_pct": 1.92, "hit10_retained_pct": 45.7, "pass": false}], "n_pairs": 1200, "n_heldout": 3769}};
+const R = DATA.receipt, S = DATA.scorecard;
+const $ = id => document.getElementById(id);
+const BETAS = ["0.00","0.15","0.30","0.45","0.60"];
+const fmt = (x, d=1) => Number(x).toFixed(d);
+const plural = (n, a, b) => n === 1 ? a : b;
+
+/* ---------- Panel A ---------- */
+$("hist").innerHTML = R.history_labels.map(h => `<span class="chip">Viewed: ${h}</span>`).join("");
+const n = R.n_missed;
+$("msg").innerHTML = `<b>${n}</b> ${plural(n,"role that matches","roles that match")} your profile ${plural(n,"was","were")} ranked lower because of your browsing history. Show ${plural(n,"it","them")}?`;
+$("showbtn").textContent = `Show ${plural(n,"it","them")}`;
+$("missed").innerHTML = R.missed.map(j => `
+  <div class="job">
+    <div class="t">${j.title}</div>
+    <div class="meta">
+      <span>Salary <b>${j.salary_band}</b> (${j.salary_source})</span>
+      <span>Contract <b>${j.contract}</b></span>
+      <span>Remote <b>${j.remote ? "Yes" : "No"}</b></span>
+    </div>
+    <div class="meta"><span>Profile match <b>${fmt(j.match,2)}</b>, #${j.profile_rank} of 100 by your profile, now #${j.personalized_rank} in your personalized feed</span></div>
+    <div class="matchbar" aria-hidden="true"><i style="width:${Math.round(j.match*100)}%"></i></div>
+  </div>`).join("");
+$("showbtn").onclick = () => {
+  const m = $("missed"), open = !m.classList.contains("show");
+  m.classList.toggle("show", open); $("showbtn").setAttribute("aria-expanded", open);
+  $("showbtn").textContent = open ? `Hide ${plural(n,"it","them")}` : `Show ${plural(n,"it","them")}`;
+};
+function renderFeed(mode){
+  const list = mode === "profile" ? R.feed_profile : R.feed_personalized;
+  $("bPers").setAttribute("aria-pressed", mode !== "profile");
+  $("bProf").setAttribute("aria-pressed", mode === "profile");
+  $("feed").innerHTML = list.map((j,i) => {
+    const cls = mode === "profile" && j.missed ? "hl" : (mode !== "profile" && j.new_in_personalized ? "add" : "");
+    const tag = mode === "profile" && j.missed ? `<span class="tag miss">Hidden by history</span>`
+              : (mode !== "profile" && j.new_in_personalized ? `<span class="tag add">Added by history</span>`
+              : (j.high_value ? `<span class="tag hv">High value</span>` : ""));
+    return `<li class="${cls}"><span class="n">${i+1}</span><span><b>${j.title}</b><br><span class="s">${j.salary_band} | ${j.contract} | ${j.remote ? "Remote" : "On-site"} | match ${fmt(j.match,2)}</span></span>${tag}</li>`;
+  }).join("");
+}
+$("bPers").onclick = () => renderFeed("personalized");
+$("bProf").onclick = () => renderFeed("profile");
+renderFeed("personalized");
+$("rcap").textContent = `How this example was chosen: it is a real entry-history twin from the test set, picked by a fixed rule. ` +
+  `${R.n_with_blindspot} of ${R.n_twins} entry-history twins had at least one missed role; among them the median count is ${R.median_rule_value}. ` +
+  `We show the first twin in sample order with exactly that count. Job titles are built from the dataset's job category and seniority fields (JTH has no title column).`;
+
+/* ---------- Panel B ---------- */
+const thr = {...S.defaults};
+const THR_UI = [
+  ["TEG_pp","Max Twin Exposure Gap (pp)",0.1],
+  ["blindspot_rate_pct","Max Blindspot Rate (%)",0.5],
+  ["mobility_drop_pp","Max drop in Mobility Exposure (pp)",0.1],
+  ["compat_cost_pct","Max compatibility cost (%)",0.1]];
+$("thr").innerHTML = THR_UI.map(([k,l,s]) => `<label>${l}<input type="number" step="${s}" id="t_${k}" value="${thr[k]}"></label>`).join("");
+THR_UI.forEach(([k]) => $("t_"+k).addEventListener("input", e => { const v = parseFloat(e.target.value); if (!isNaN(v)) { thr[k] = v; renderScore(); }}));
+$("thrcap").textContent = `Default thresholds apply the pre-registered 50% rule to each harm metric (half of its level at beta = 0.45), and the pre-registered 2% compatibility guard. They are starting points only: the first rollout step is setting them with job seekers.`;
+$("ssub").textContent = `${S.n_pairs.toLocaleString()} test-set twin pairs. Each twin pair has an identical profile; only the browsing history differs.`;
+
+function tile(name, val, unit, ci, rule, ok, extra=""){
+  const badge = ok === null ? `<span class="badge info">Context</span>`
+              : ok ? `<span class="badge pass">&#10003; PASS</span>` : `<span class="badge fail">&#10007; FAIL</span>`;
+  return `<div class="tile"><div class="nm"><span>${name}</span>${badge}</div>
+    <div class="val">${val}${unit}</div><div class="ci">95% CI ${ci}</div>${extra}<div class="def">${rule}</div></div>`;
+}
+function renderScore(){
+  const b = BETAS[+$("beta").value], m = S.per_beta[b];
+  $("bval").textContent = `beta = ${b}` + (b === "0.45" ? "  (Phase 1 operating point)" : (b === "0.00" ? "  (profile only)" : ""));
+  const teg = m.TEG_pp, bl = m.blindspot_rate_pct, mob = m.mobility_exposure_pct, cc = m.compat_cost_pct, hit = m.heldout_hit10;
+  const drop = S.mobility_beta0 - mob[0];
+  const ok = {teg: teg[0] <= thr.TEG_pp, bl: bl[0] <= thr.blindspot_rate_pct, mob: drop <= thr.mobility_drop_pp, cc: cc[0] <= thr.compat_cost_pct};
+  $("exp").innerHTML =
+    tile("Twin Exposure Gap", fmt(teg[0],2), " pp", `${fmt(teg[1],2)} to ${fmt(teg[2],2)}`,
+         `Senior-history twin's high-value Top-10 share minus entry twin's. Pass if at most ${thr.TEG_pp} pp.`, ok.teg) +
+    tile("Blindspot Rate", fmt(bl[0]), "%", `${fmt(bl[1])} to ${fmt(bl[2])}`,
+         `Entry-history twins missing at least one high-value role from their own profile-only Top 10. Pass if at most ${thr.blindspot_rate_pct}%.`, ok.bl) +
+    tile("Mobility Exposure", fmt(mob[0]), "%", `${fmt(mob[1])} to ${fmt(mob[2])}`,
+         `Share of the entry twin's Top 10 one level up (Mid). Pass if the drop vs profile only is at most ${thr.mobility_drop_pp} pp.`, ok.mob,
+         `<div class="ci">${drop >= 0 ? "Down" : "Up"} ${fmt(Math.abs(drop))} pp vs profile only (${fmt(S.mobility_beta0)}%)</div>`);
+  $("comp").innerHTML =
+    tile("Compatibility cost", fmt(cc[0],2), "%", `${fmt(cc[1],2)} to ${fmt(cc[2],2)}`,
+         `Drop in mean Top-10 profile match vs profile only. Pass if at most ${thr.compat_cost_pct}%.`, ok.cc) +
+    tile("History value (Hit@10)", fmt(hit[0]), "%", `${fmt(hit[1])} to ${fmt(hit[2])}`,
+         `How often real history puts a person's next real application in their Top 10 (${S.n_heldout.toLocaleString()} held-out test candidates). Shown so fairness is never judged without usefulness.`, null);
+  const fails = Object.values(ok).filter(x => !x).length;
+  const v = $("verdict");
+  v.className = "verdict " + (fails ? "fail" : "pass");
+  v.textContent = fails ? `${fails} of 4 audit checks fail at beta = ${b}` : `All 4 audit checks pass at beta = ${b}`;
+}
+$("beta").addEventListener("input", renderScore);
+renderScore();
+const NM = {history_cap:"History cap", profile_floor:"Profile floor", exploration:"Exploration slots"};
+$("fx").innerHTML = `<tr><th>Fix</th><th>Gap cut</th><th>Compat. cost</th><th>History value kept</th><th>Pre-registered verdict</th></tr>` +
+  S.fixes.map(f => { const [m,p] = f.label.split("="); return `<tr><td>${NM[m]} (${p})</td><td>${fmt(f.TEG_reduction_pct)}%</td><td>${fmt(f.compat_cost_pct,2)}%</td><td>${fmt(f.hit10_retained_pct)}%</td><td>${f.pass ? '<span class="badge pass">&#10003; PASS</span>' : '<span class="badge fail">&#10007; FAIL</span>'}</td></tr>`; }).join("") +
+  `<tr><td colspan="5" class="s" style="color:var(--ink2)">Pass needs: gap cut at least 50%, compatibility cost at most 2%, history value kept at least 75%.</td></tr>`;
+$("foot").textContent = "Data: JTH v1.1 (Zenodo 21390581, DOI 10.1145/3773078.3831846, CC BY-NC 4.0). Seed 20261115, 50/50 tune/test split, 3,000 bootstrap resamples. Compatibility is a TF-IDF proxy, not verified eligibility. No demographic fields are used.";
+</script>
+</body>
+</html>

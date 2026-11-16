@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Opportunity Blindspot Audit | Phase 2</title>
+<style>
+@page{size:11in 8.5in;margin:0}
+:root{--navy:#071A2B;--ink:#10283F;--ink2:#5B6B7C;--card:#F3F7FB;--line:#DCE6F0;--blue:#1A6FE0;--coral:#F25C6A;--teal:#2EC4D0;--green:#1A9E6E;--amber:#FFB000;--failbg:#FDECEE;--failink:#B3261E;--passbg:#E7F6EF;--passink:#146C4B}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:1056px;height:816px;position:relative;overflow:hidden;padding:40px 52px 0;page-break-after:always;background:#fff}
+.page:last-child{page-break-after:auto}
+.lab{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.pn{position:absolute;top:40px;right:52px;font-size:11px;font-weight:700;color:var(--ink2)}
+h1{margin:6px 0 14px;font-size:29px;line-height:1.08;font-weight:800;text-transform:uppercase;color:var(--ink);letter-spacing:.005em}
+.foot{position:absolute;left:52px;right:52px;bottom:16px;border-top:1px solid var(--line);padding-top:7px;display:flex;justify-content:space-between;gap:20px;font-size:9px;color:var(--ink2);line-height:1.35}
+.foot b.brand{color:var(--blue);font-size:10px;white-space:nowrap;align-self:flex-end}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.ch{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;margin:0 0 6px}
+.blue{color:var(--blue)}.coral{color:var(--coral)}.teal{color:var(--teal)}.green{color:var(--green)}.amber{color:#B57D00}
+p{margin:0}
+.sm{font-size:11px;line-height:1.38;color:var(--ink2)}
+.md{font-size:12.5px;line-height:1.4}
+.grid{display:grid;gap:12px}
+.num{font-weight:800;line-height:1}
+.badge{display:inline-block;font-size:10px;font-weight:800;border-radius:999px;padding:2px 8px}
+.badge.fail{background:var(--failbg);color:var(--failink)}.badge.pass{background:var(--passbg);color:var(--passink)}
+img{display:block;max-width:100%}
+/* cover */
+.cover{background:var(--navy);color:#fff}
+.cover .lab{color:var(--teal)} .cover .pn{color:#B9C7D6}
+.cover h1{color:#fff;font-size:40px;margin-top:10px}
+.cover .hook{font-size:24px;font-weight:800;color:var(--amber);margin:-4px 0 22px}
+.dcard{background:#0D2A44;border:1px solid #1F4566;border-radius:16px;padding:16px 18px}
+.cover .ch{color:var(--teal)}
+.cover .sm{color:#B9C7D6}
+.cover .foot{border-top-color:#1F4566;color:#8FA3B8}
+.cover .foot b.brand{color:var(--teal)}
+.pol li{margin:0 0 9px;font-size:13px;line-height:1.4;color:#E6EEF6}
+.pol li b{color:#fff}
+.pol{margin:0;padding-left:18px}
+.scen{color:var(--amber);font-weight:800;text-transform:uppercase;font-size:10.5px;letter-spacing:.06em}
+.sol{margin-top:16px;border-left:6px solid var(--amber);background:#0D2A44;border-radius:12px;padding:14px 18px;font-size:17px;font-weight:700;line-height:1.35}
+.sol b{color:var(--amber)}
+/* steps */
+.steps{grid-template-columns:repeat(5,1fr)}
+.step .dot{width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;margin-bottom:7px}
+.step .t{font-weight:800;font-size:12.5px;text-transform:uppercase;margin-bottom:3px}
+.mcard .f{font-family:Consolas,"Courier New",monospace;font-size:10.8px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin:6px 0;line-height:1.35;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--ink)}
+.promise{display:grid;grid-template-columns:auto repeat(4,1fr);gap:10px;align-items:stretch;background:var(--navy);color:#fff;border-radius:14px;padding:11px 14px}
+.promise .h{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);align-self:center;max-width:120px}
+.promise div.i{font-size:11px;line-height:1.35;color:#E6EEF6}
+.promise div.i b{color:var(--amber)}
+/* tiles */
+.tile .num{font-size:30px;margin:2px 0 4px}
+table.pf{width:100%;border-collapse:collapse;font-size:10.8px}
+table.pf th,table.pf td{padding:4px 6px;border-top:1px solid var(--line);text-align:left}
+table.pf th{font-size:9.5px;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
+.x{color:var(--failink);font-weight:800}.ok{color:var(--passink);font-weight:800}
+.callout{display:flex;gap:8px;align-items:flex-start;margin-top:6px}
+.callout .k{flex:0 0 20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.ph{background:#FFF4D6;color:#7A5300;font-weight:800;border-radius:6px;padding:1px 6px}
+.road{grid-template-columns:1fr 1fr 1fr}
+.road .card{position:relative}
+.road .n{font-size:10px;font-weight:800;color:#fff;background:var(--green);border-radius:999px;padding:2px 9px;display:inline-block;margin-bottom:5px}
+.dbox{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.dbox div p.t{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--blue);margin-bottom:2px}
+.roomy .sm{font-size:12.2px;line-height:1.42}.roomy .card{padding:14px 16px}.roomy .grid{gap:14px}.roomy3 .sm{font-size:11.6px}
+.p4 h1{margin-bottom:10px}.p4 .callout{margin-top:4px}.p4 .ch{margin-bottom:3px}
+.v{white-space:nowrap}
+.src{font-size:8.8px;line-height:1.32;color:var(--ink2)}
+.exists{grid-template-columns:1fr 1.25fr 0.9fr 1.55fr;gap:10px}
+.exists .card{padding:9px 12px}.exists .sm{font-size:11.2px;line-height:1.36}
+.exists p.t{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);margin-bottom:3px}
+.exists .new{background:#EAF2FD;border-color:var(--blue)}.exists .new p.t{color:var(--blue)}
+.p2 .grid{gap:10px}.p2 .card{padding:10px 14px}
+.p2 .step .hd{display:flex;align-items:center;gap:8px;margin-bottom:4px}.p2 .step .dot{margin:0;flex:0 0 24px;width:24px;height:24px}.p2 .step .t{margin:0;line-height:1.15}
+.p2 .mcard .f{margin:4px 0}.p2 .promise{padding:9px 14px}
+.p5 .grid{gap:10px}.p5 .card{padding:11px 14px}.p5 .dbox .sm{font-size:11px;line-height:1.36}.p5 .quote{font-size:10.6px;padding:5px 8px;margin-top:5px}
+.team{margin-bottom:5px}.ccap{font-size:11px;line-height:1.36;color:var(--ink2);margin-top:4px}
+.quote{background:#fff;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:8px;padding:6px 9px;margin-top:7px;font-size:11px;line-height:1.38;color:var(--ink);font-style:italic}
+</style>
+</head>
+<body>
+
+<!-- ======================= PAGE 1 ======================= -->
+<section class="page cover">
+  <div class="lab">The Opportunity Blindspot | Phase 2</div><div class="pn"><span class="s">1</span> / <span class="s">5</span></div>
+  <h1>The blindspot happens<br>before the law looks</h1>
+  <p class="hook">Ontario regulates the screen. Nobody audits the feed.</p>
+  <div class="grid" style="grid-template-columns:1fr 1.25fr;gap:18px">
+    <div class="dcard">
+      <p class="ch">Phase 1 finding, now replicated</p>
+      <div style="display:flex;gap:18px;align-items:flex-end;margin:6px 0 10px">
+        <div><div class="num" style="font-size:38px;color:#fff">{{p1_gap}} pp</div><p class="sm">Phase 1 gap</p></div>
+        <div style="font-size:26px;color:var(--teal);font-weight:800;padding-bottom:16px">&rarr;</div>
+        <div><div class="num" style="font-size:38px;color:var(--amber)">{{teg}} pp</div><p class="sm">Phase 2, new test-set candidates</p></div>
+      </div>
+      <p class="sm">Same profile, different history. Twins with a senior-oriented history see more high-value roles in their Top {{topk}} than twins with an entry-level history. Phase 2 test set: 95% CI {{teg_lo}} to {{teg_hi}} pp. Identical-history placebo: {{plc}} pp.</p>
+      <p class="sm" style="margin-top:6px;color:#E6EEF6">Re-implemented pipeline reproduces {{p1_rebuild}} pp, inside the Phase 1 95% CI ({{p1_lo}} to {{p1_hi}}).</p>
+    </div>
+    <div class="dcard">
+      <p class="ch">The policy gap</p>
+      <ul class="pol">
+        <li><b>Ontario, since <span class="s">Jan 1, 2026</span>:</b> employers with <span class="s">25</span> or more employees must say in public job postings whether AI is used to screen, assess or select applicants. That rule starts <b>after</b> someone applies.</li>
+        <li><b>EU AI Act:</b> AI used to place targeted job ads is listed as high-risk (Annex III). After the Digital Omnibus, standalone Annex III duties apply from <span class="s">Dec 2, 2027</span>.</li>
+        <li><span class="scen">Motivating scenario, not a finding:</span> Ontario bans "Canadian experience" requirements in postings. A history-driven feed could rebuild a similar barrier without anyone seeing it. The audit can test this in future work.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px">
+    <div class="dcard"><p class="ch">History helps</p><div class="num" style="font-size:28px;color:#fff">+{{h1}} pp</div><p class="sm" style="margin-top:5px">Hit@10 on real held-out histories. Personalization has real value (pre-registered H1 passes).</p></div>
+    <div class="dcard"><p class="ch">But it hides matches</p><div class="num" style="font-size:28px;color:var(--coral)">{{bl}}%</div><p class="sm" style="margin-top:5px">of entry-history twins lose at least one high-value role their own profile would have shown.</p></div>
+    <div class="dcard"><p class="ch">Easy fixes fall short</p><div class="num" style="font-size:28px;color:#fff">{{n_fix_pass}} of {{n_fix}}</div><p class="sm" style="margin-top:5px">tested fixes pass all pre-registered tests on held-out data. We report every failure.</p></div>
+    <div class="dcard"><p class="ch">So we built the audit</p><div class="num" style="font-size:22px;color:var(--amber);padding:3px 0">Receipt + Scorecard</div><p class="sm" style="margin-top:5px">A twin test with three exposure metrics and a compatibility guard, shown to users and to operators.</p></div>
+  </div>
+  <div class="sol"><b>The Opportunity Blindspot Audit:</b> a twin test, three exposure metrics plus a compatibility guard, and a user receipt that make the feed's invisible rejections measurable.</div>
+  <div class="foot"><span>Controlled simulation on public European job-platform data (JTH v1.1). Not an audit of a real platform. Sources on page <span class="s">5</span>.</span><b class="brand">THE OPPORTUNITY BLINDSPOT</b></div>
+</section>
+
+<!-- ======================= PAGE 2 ======================= -->
+<section class="page roomy p2">
+  <div class="lab">Audit framework</div><div class="pn"><span class="s">2</span> / <span class="s">5</span></div>
+  <h1>One test that any job feed can run</h1>
+  <div class="grid steps">
+    <div class="card step"><div class="hd"><div class="dot"><span class="s">1</span></div><p class="t">Clone</p></div><p class="sm">Copy one real candidate profile into two digital twins.</p></div>
+    <div class="card step"><div class="hd"><div class="dot"><span class="s">2</span></div><p class="t">Vary history only</p></div><p class="sm">Twin A browsed senior roles. Twin B browsed entry-level roles. Nothing else changes.</p></div>
+    <div class="card step"><div class="hd"><div class="dot"><span class="s">3</span></div><p class="t">Rank</p></div><p class="sm">Same ranker, same pool of the {{pool}} jobs that best match the profile.</p></div>
+    <div class="card step"><div class="hd"><div class="dot"><span class="s">4</span></div><p class="t">Compare</p></div><p class="sm">Check each twin's feed against its own "profile only" Top {{topk}}.</p></div>
+    <div class="card step"><div class="hd"><div class="dot"><span class="s">5</span></div><p class="t">Score</p></div><p class="sm">Three exposure metrics plus a compatibility guard, each with a 95% CI and a pass or fail threshold.</p></div>
+  </div>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);margin-top:12px">
+    <div class="card mcard"><p class="ch coral">Twin Exposure Gap</p><div class="f">Twin A high-value share of Top {{topk}} minus Twin B share</div><p class="sm">How much history alone shifts who sees the best roles.</p></div>
+    <div class="card mcard"><p class="ch coral">Blindspot Rate</p><div class="f">% of entry-history twins with &ge; <span class="s">1</span> missed opportunity</div><p class="sm">Missed = a high-value job in my own profile-only Top {{topk}} that my personalized feed dropped.</p></div>
+    <div class="card mcard"><p class="ch coral">Mobility Exposure</p><div class="f">share of entry twin Top {{topk}} one seniority level up (Mid)</div><p class="sm">Does the feed still show a next career step?</p></div>
+    <div class="card mcard"><p class="ch green">Compatibility Guard</p><div class="f">drop in mean Top-{{topk}} profile match vs profile only, &le; {{thr_cc}}%</div><p class="sm">Stops anyone "fixing" fairness by showing bad matches.</p></div>
+  </div>
+  <p class="sm" style="margin:7px 2px 0">High value = top {{hv_share}}% of the matched pool on a score of {{w_sal}}% salary percentile + {{w_perm}}% permanent contract + {{w_rem}}% remote option (Phase 1 definition).</p>
+  <div class="grid" style="grid-template-columns:1.5fr 1fr;margin-top:8px">
+    <div class="card"><p class="ch blue">Why these metrics fit</p>
+      <p class="sm">Twins hold the profile, the job pool and the ranker constant, so any gap is caused by history. A placebo with identical histories must show no gap. Every exposure metric sits next to a compatibility cost, so a platform cannot look fair by showing worse matches.</p></div>
+    <div class="card"><p class="ch blue">Who runs it</p>
+      <p class="sm">Platforms run it internally on their own profiles. External auditors and regulators use synthetic or consented profiles plus ranker access.</p></div>
+  </div>
+  <p class="ch blue" style="margin:10px 2px 5px">What exists vs what's new</p>
+  <div class="grid exists">
+    <div class="card"><p class="t">Ontario disclosure (<span class="s">2026</span>) [<span class="s">1</span>, <span class="s">2</span>]</p><p class="sm">Covers AI screening after someone applies, not the feed that decides what they see.</p></div>
+    <div class="card"><p class="t">EU DSA Article <span class="s">38</span> [<span class="s">6</span>]</p><p class="sm">Very large platforms must offer at least one recommender option not based on profiling: an on/off switch that measures no harm. Commentators call for more graded, meaningful controls [<span class="s">7</span>].</p></div>
+    <div class="card"><p class="t">Researcher audits</p><p class="sm">Usually one-off external studies, not a repeatable compliance test.</p></div>
+    <div class="card new"><p class="t">Ours</p><p class="sm">A repeatable twin test, a compatibility guard so fairness can't be bought with bad matches, and a receipt naming the exact job a person missed. It keeps personalization's measured value (+{{h1}} pp Hit@10) instead of switching it off.</p></div>
+  </div>
+  <p class="sm" style="margin:5px 2px 0">Our "profile only" toggle still ranks on profile data, which may count as profiling under GDPR Art. <span class="s">4(4)</span>. We do not claim it satisfies DSA Article <span class="s">38</span>.</p>
+  <div class="promise" style="margin-top:12px">
+    <div class="h">Phase 1 promised four things</div>
+    <div class="i"><b>Audit built.</b> This page, plus the working prototype on page <span class="s">4</span>.</div>
+    <div class="i"><b>Fixes tested on held-out pairs.</b> Tuned on one half, scored on the other (page <span class="s">3</span>).</div>
+    <div class="i"><b>Exposure and compatibility monitored together.</b> One scorecard (pages <span class="s">3</span> and <span class="s">4</span>).</div>
+    <div class="i"><b>Thresholds co-designed with users.</b> Built as editable settings; setting them with job seekers is rollout step one (page <span class="s">5</span>).</div>
+  </div>
+  <div class="foot"><span>Pass or fail thresholds and decision rules were pre-registered in criteria.md before any Phase 2 result existed.</span><b class="brand">THE OPPORTUNITY BLINDSPOT</b></div>
+</section>
+
+<!-- ======================= PAGE 3 ======================= -->
+<section class="page roomy3">
+  <div class="lab">Evidence</div><div class="pn"><span class="s">3</span> / <span class="s">5</span></div>
+  <h1>The gap replicates. No simple fix passes.</h1>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="card tile"><p class="ch coral">Twin Exposure Gap</p><div class="num" style="font-size:30px;color:var(--coral)">{{teg}} pp</div><p class="sm">95% CI {{teg_lo}} to {{teg_hi}}. Senior-history twins: {{hvA}}% high-value roles in Top {{topk}}; entry-history twins: {{hvB}}%.</p></div>
+    <div class="card tile"><p class="ch coral">Blindspot Rate</p><div class="num" style="font-size:30px;color:var(--coral)">{{bl}}%</div><p class="sm">of entry-history twins lose at least one high-value match (CI {{bl_lo}} to {{bl_hi}}). Mean {{miss_mean}} per twin.</p></div>
+    <div class="card tile"><p class="ch green">Placebo</p><div class="num" style="font-size:30px;color:var(--green)">{{plc}} pp</div><p class="sm">Identical histories give no gap. Paired permutation test on the real gap: p {{perm_p}}.</p></div>
+    <div class="card tile"><p class="ch blue">History helps (H1 passes)</p><div class="num" style="font-size:30px;color:var(--blue)">+{{h1}} pp</div><p class="sm">Hit@10 on real held-out histories: {{hit0}}% with profile only, {{hit45}}% personalized (CI {{h1_lo}} to {{h1_hi}}; bar was &ge; {{thr_h1}} pp).</p></div>
+  </div>
+  <div class="grid charts3" style="grid-template-columns:repeat(3,1fr);margin-top:10px">
+    <div class="card" style="padding:8px 9px"><img src="../figures/heldout_hit10.png" alt="Hit@10 rises with history weight"><p class="ccap">Personalization is useful, so a fix must keep most of this value. Dashed line: Phase <span class="s">1</span> setting, beta {{beta}}.</p></div>
+    <div class="card" style="padding:8px 9px"><img src="../figures/gap_by_beta.png" alt="The gap grows as history weight grows"><p class="ccap">Gap holds at {{rob_posted}} pp (CI {{rob_posted_lo}} to {{rob_posted_hi}}) using only posted salaries ({{imp_pool}}% of matched-pool salaries were LLM-imputed), and at {{rob_excl}} pp if imputed jobs cannot count as high-value. Salary-only value: {{rob_sal}} pp; equal weights: {{rob_eq}} pp.</p></div>
+    <div class="card" style="padding:8px 9px"><img src="../figures/tradeoff_pdf.png" alt="No fix lands in the pass zone"><p class="ccap">Each fix at its tune-set setting, scored on the test set (95% CIs). All three stay under the {{thr_cc}}% compatibility guard (table).</p></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1.35fr 1fr;margin-top:10px">
+    <div class="card" style="padding:8px 12px">
+      <table class="pf">
+        <tr><th>Fix (setting tuned on tune set)</th><th>Gap cut &ge; {{thr_teg}}%</th><th>Compat. cost &le; {{thr_cc}}%</th><th>Hit@10 kept &ge; {{thr_hit}}%</th><th>Verdict</th></tr>
+        <tr><td>History cap (beta {{cap_param}} for high-value roles)</td><td class="ok">{{cap_red}}%</td><td class="ok">{{cap_cc}}%</td><td class="x">{{cap_hit}}%</td><td><span class="badge fail">FAIL</span></td></tr>
+        <tr><td>Profile floor (tau {{floor_param}})</td><td class="x">{{floor_red}}%</td><td class="ok">{{floor_cc}}%</td><td class="ok">{{floor_hit}}%</td><td><span class="badge fail">FAIL</span></td></tr>
+        <tr><td>Exploration slots (k = {{expl_param}})</td><td class="ok">{{expl_red}}%</td><td class="ok">{{expl_cc}}%</td><td class="x">{{expl_hit}}%</td><td><span class="badge fail">FAIL</span></td></tr>
+      </table>
+    </div>
+    <div class="card" style="background:var(--navy);border-color:var(--navy);color:#fff">
+      <p class="ch teal">Pre-registered decision</p>
+      <p class="md" style="color:#E6EEF6">No fix passes all three tests, so the recommendation is the <b style="color:var(--amber)">Audit plus a "Rank by my profile only" control</b>. The history cap came closest: it kept {{cap_hit_tune}}% of the gain on the tune set but {{cap_hit}}% on test (CI {{cap_hit_lo}} to {{cap_hit_hi}}). Personalization itself costs {{cc45}}% compatibility, just over the guard.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Test set only: {{n_pairs}} twin pairs and {{n_heldout}} held-out candidates; 50/50 tune/test split by candidate ID; seed {{seed2}}; {{B}} bootstrap resamples, {{P}} permutations. Criteria written and committed before results (criteria.md, hash in criteria.lock). Re-implemented pipeline reproduces {{p1_rebuild}} pp, inside the Phase 1 95% CI. Salary robustness checks were added after pre-registration.</span><b class="brand">THE OPPORTUNITY BLINDSPOT</b></div>
+</section>
+
+<!-- ======================= PAGE 4 ======================= -->
+<section class="page p4">
+  <div class="lab">Prototype</div><div class="pn"><span class="s">4</span> / <span class="s">5</span></div>
+  <h1>A receipt for users. A scorecard for operators.</h1>
+  <div class="grid" style="grid-template-columns:380px 1fr;gap:16px">
+    <div>
+      <div class="shot"><img src="../figures/receipt_pdf.png" alt="Opportunity Receipt"></div>
+      <p class="ch coral" style="margin-top:9px">What the job seeker sees</p>
+      <div class="callout"><span class="k"><span class="s">1</span></span><p class="sm">A plain alert: {{r_med}} role that matches their profile was pushed down by browsing history.</p></div>
+      <div class="callout"><span class="k"><span class="s">2</span></span><p class="sm">The missed role itself: {{r_title}}, {{r_band}}, #{{r_prank}} by profile but #{{r_frank}} in the feed.</p></div>
+      <div class="callout"><span class="k"><span class="s">3</span></span><p class="sm">One toggle: "Rank by my profile only".</p></div>
+    </div>
+    <div>
+      <div class="shot"><img src="../figures/scorecard_pdf.png" alt="Operator Audit Scorecard"></div>
+      <div class="grid" style="grid-template-columns:1fr 1fr;gap:8px 16px;margin-top:9px">
+        <div><p class="ch blue">What the operator sees</p>
+          <div class="callout"><span class="k"><span class="s">4</span></span><p class="sm">Exposure and compatibility side by side, each with a 95% CI and a pass or fail badge.</p></div>
+          <div class="callout"><span class="k"><span class="s">5</span></span><p class="sm">A history-weight slider replays the audit at five settings.</p></div></div>
+        <div style="padding-top:20px">
+          <div class="callout"><span class="k"><span class="s">6</span></span><p class="sm">Editable thresholds, ready to set with job seekers.</p></div>
+          <div class="callout"><span class="k"><span class="s">7</span></span><p class="sm">In the prototype, every tested fix is listed with its pre-registered verdict.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:10px;padding:9px 14px">
+    <p class="sm"><b style="color:var(--ink)">How the example was chosen:</b> a real entry-history twin from the test set, picked by a fixed rule. {{r_nblind}} of {{r_ntwins}} entry-history twins missed at least one role; the median among them is {{r_med}}. We show the first twin in sample order with that count. Titles come from the dataset's job category and seniority fields.</p>
+  </div>
+  <div class="foot"><span>Prototype loads precomputed test-set results; it does not rank live jobs. Screenshots from the working prototype at beta = {{beta}}.</span><b class="brand">THE OPPORTUNITY BLINDSPOT</b></div>
+</section>
+
+<!-- ======================= PAGE 5 ======================= -->
+<section class="page roomy p5">
+  <div class="lab">From prototype to practice</div><div class="pn"><span class="s">5</span> / <span class="s">5</span></div>
+  <h1>Start voluntary. End in the rulebook.</h1>
+  <div class="grid road">
+    <div class="card"><span class="n">Step <span class="s">1</span> | voluntary</span><p class="ch green">"Blindspot Audited" badge</p><p class="sm">Job boards run the twin test on their own ranker each quarter and publish the Scorecard. It is a batch job: no new data and no user tracking. A full audit takes at most {{rt_sec}} seconds on a laptop ({{rt_cpu}}, {{rt_ram}} GB RAM; slowest of {{rt_runs}} fresh runs).</p></div>
+    <div class="card"><span class="n">Step <span class="s">2</span> | procurement</span><p class="ch green">An audit clause in public contracts</p><p class="sm">Owner: Ontario's Ministry of Labour, Immigration, Training and Skills Development, which runs Employment Ontario [<span class="s">8</span>]. The clause:</p>
+      <p class="quote">"The vendor shall run the Opportunity Blindspot twin test on its ranking system each quarter and publish the Audit Scorecard. Contract renewal requires every check to pass the thresholds agreed with the contracting authority."</p></div>
+    <div class="card"><span class="n">Step <span class="s">3</span> | regulation</span><p class="ch green">Disclosure for the feed</p><p class="sm">Ontario already makes employers disclose AI screening and requires job posting platforms to take fraud reports [<span class="s">1</span>]. Extend that logic from screening to distribution: disclose personalization and offer a profile-only view.</p></div>
+  </div>
+  <div class="grid" style="grid-template-columns:0.85fr 1.15fr;margin-top:10px">
+    <div class="card"><p class="ch blue">Co-design comes first</p><p class="sm">The Scorecard thresholds are editable. Today's defaults apply our pre-registered rule of halving each harm ({{d_teg}} pp gap, {{d_bl}}% blindspot rate, {{d_mob}} pp mobility drop) plus the {{thr_cc}}% compatibility guard. The first rollout step is setting them with job seekers, starting with entry-level and career-changing users. No pilot has run yet.</p></div>
+    <div class="card"><p class="ch coral">Limits and trade-offs</p><p class="sm">A simulation, not an audit of a proprietary platform. Treatment histories are synthetic ({{hist_k}} jobs each). Compatibility is a text-similarity proxy, not verified eligibility. "High value" is an operational definition and seniority is LLM-inferred. We do not use or analyse the dataset's LLM-inferred demographic fields, so we make no claim about any group. Phase <span class="s">1</span> code was re-implemented from its method. <b style="color:var(--ink)">Next:</b> test the newcomer scenario with consented real histories, and apply the same twin test to housing and education ads.</p></div>
+  </div>
+  <div class="card" style="margin-top:10px">
+    <p class="ch blue">Data box</p>
+    <div class="dbox">
+      <div><p class="t">Source</p><p class="sm">JTH v1.1: {{n_cand}} candidates, {{n_jobs}} vacancies, {{n_proc}} application processes. Zenodo record, <span style="white-space:nowrap">CC BY-NC 4.0</span>.</p></div>
+      <div><p class="t">Represents / does not</p><p class="sm">Real profiles, vacancies and dated application funnels from a European job platform. Not what any live feed showed, not Canada, not demographic groups.</p></div>
+      <div><p class="t">Exposure proxy</p><p class="sm">A job counts as seen if it appears in the Top {{topk}} of the ranked feed.</p></div>
+      <div><p class="t">Limitations</p><p class="sm">Many fields are missing (missing salaries use an LLM estimate), several fields are LLM-inferred, dates carry noise, and roles skew to tech.</p></div>
+      <div><p class="t">Why the metrics fit</p><p class="sm">Twins isolate history; a placebo checks the test; every exposure metric is paired with a compatibility cost.</p></div>
+    </div>
+  </div>
+  <div class="grid" style="grid-template-columns:330px 1fr;margin-top:10px;gap:14px">
+    <div class="card"><p class="ch blue">Team</p><p class="sm team"><b style="color:var(--ink)">Princy Patel</b>, policy and research: policy and source review, audit framework design, rollout plan and writing.</p><p class="sm team"><b style="color:var(--ink)">Sahil Patel</b>, data and engineering: data pipeline, twin experiments and statistics, prototype and verification.</p></div>
+    <div class="src"><b>Sources.</b> [<span class="s">1</span>] Hicks Morley, "New Year, New Rules: Ontario Job Posting Requirements Take Effect January 1, 2026", hicksmorley.com/?p=45382. [<span class="s">2</span>] HR Reporter, "AI in hiring: Ontario employers grappling with new job posting disclosure requirement", hrreporter.com/news/hr-news/ai-in-hiring-ontario-employers-grappling-with-new-job-posting-disclosure-requirement/394101. [<span class="s">3</span>] SecurePrivacy, "EU AI Act Digital Omnibus: The New High-Risk AI Deadlines After Council Approval", secureprivacy.ai/blog/eu-ai-act-digital-omnibus-the-new-high-risk-ai-deadlines-after-council-approval. [<span class="s">4</span>] Regulation (EU) <span class="s">2024/1689</span> (AI Act), Annex III point <span class="s">4</span>(a), artificialintelligenceact.eu/annex/<span class="s">3</span>. [<span class="s">5</span>] Romero, Millet, Behar, "JTH: A Dataset for Evaluating Cold-Start and Temporal Dynamics in Job Recommendation", RecSys '<span class="s">26</span>, DOI <span class="s">10.1145/3773078.3831846</span>; github.com/Aunsiels/JTH; Zenodo <span class="s">21390581</span>. [<span class="s">6</span>] Regulation (EU) <span class="s">2022/2065</span> (Digital Services Act), Article <span class="s">38</span>, OJ L <span class="s">277</span>, <span class="s">27.10.2022</span>. [<span class="s">7</span>] DSA Observatory, "The Regulation of Recommender Systems Under the DSA: A Transition from Default to Multiple and Dynamic Controls?", dsa-observatory.eu, <span class="s">22</span> Nov <span class="s">2024</span>. [<span class="s">8</span>] Government of Ontario, "Ministry of Labour, Immigration, Training and Skills Development", ontario.ca/page/ministry-labour-immigration-training-skills-development.</div>
+  </div>
+  <div class="foot"><span>Ontario rules [<span class="s">1</span>, <span class="s">2</span>, <span class="s">8</span>]; EU AI Act [<span class="s">3</span>, <span class="s">4</span>]; EU DSA [<span class="s">6</span>, <span class="s">7</span>]; data [<span class="s">5</span>]. All figures come from code outputs (results.csv and JSON) and are checked by verify.py.</span><b class="brand">THE OPPORTUNITY BLINDSPOT</b></div>
+</section>
+</body>
+</html>

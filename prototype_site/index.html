@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Opportunity Blindspot Audit | Live demo</title>
+<meta name="description" content="Twin test demo: the same profile with two browsing histories sees different jobs. Precomputed test-set results from a controlled simulation on JTH v1.1.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A1B2E'/%3E%3Crect x='7' y='8' width='7' height='16' rx='2' fill='%236FA3FF'/%3E%3Crect x='18' y='8' width='7' height='16' rx='2' fill='%23FF8F5A'/%3E%3Ccircle cx='21.5' cy='22' r='3' fill='%23F5A524'/%3E%3C/svg%3E">
+<style>
+:root{
+  --navy:#0A1B2E; --navy2:#10263F; --navy3:#173352; --line-d:#24466B;
+  --ink-d:#EEF2F8; --ink-d2:#A9B8CC;
+  --paper:#F5F7FA; --paper2:#E8EEF6; --line-l:#CFD9E6; --ink-l:#0A1B2E; --ink-l2:#46586E;
+  --amber:#F5A524; --amber-l:#9A5600;
+  --a:#6FA3FF; --a-l:#2F6FDB; --b:#FF8F5A; --b-l:#B34A17;
+  --pass:#5BD6A0; --pass-l:#17714C; --fail:#FF8A80; --fail-l:#B3261E;
+  --s:min(1vw,1.78vh);
+  --f-key:max(44px,calc(var(--s)*5.2)); --f-h1:max(26px,calc(var(--s)*3)); --f-h2:max(18px,calc(var(--s)*1.55));
+  --f-body:max(14px,calc(var(--s)*1.1)); --f-small:max(12.5px,calc(var(--s)*0.92));
+  --rh:max(34px,calc(var(--s)*2.62));
+  --font:ui-sans-serif,"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--font);font-size:var(--f-body);line-height:1.4;background:var(--navy);color:var(--ink-d);-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- top bar ---------- */
+.bar{display:flex;align-items:center;gap:calc(var(--s)*1.4);padding:calc(var(--s)*.8) calc(var(--s)*4.2) 0;min-height:calc(var(--s)*3.6)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:var(--f-small);letter-spacing:.01em;color:var(--ink-d2);white-space:nowrap}
+.brand svg{width:28px;height:28px;flex:none}
+.steps{display:flex;gap:6px;margin-left:auto;list-style:none;padding:0;margin-top:0;margin-bottom:0}
+.steps button{display:flex;align-items:center;gap:10px;background:none;border:0;padding:8px 12px;border-radius:999px;cursor:pointer;color:var(--ink-d2);font-size:var(--f-small)}
+.steps .n{display:grid;place-items:center;width:max(30px,calc(var(--s)*1.9));height:max(30px,calc(var(--s)*1.9));border-radius:50%;border:2px solid var(--line-d);font-weight:800;font-size:var(--f-small)}
+.steps button[aria-current="step"]{color:var(--ink-d)}
+.steps button[aria-current="step"] .n{background:var(--amber);border-color:var(--amber);color:var(--navy)}
+.steps button.done .n{border-color:var(--amber);color:var(--amber)}
+.modes{display:flex;background:var(--navy2);border:1px solid var(--line-d);border-radius:999px;padding:4px}
+.modes button{border:0;background:none;padding:7px 18px;border-radius:999px;cursor:pointer;color:var(--ink-d2);font-size:var(--f-small);font-weight:600}
+.modes button[aria-pressed="true"]{background:var(--ink-d);color:var(--navy)}
+
+/* ---------- pitch stage ---------- */
+#pitch{display:flex;flex-direction:column;min-height:100vh}
+.stage{flex:1;display:flex;flex-direction:column;padding:calc(var(--s)*.9) calc(var(--s)*4.2) 0;max-width:2200px;width:100%;margin:0 auto}
+.head{min-height:0}
+.kicker{font-size:var(--f-small);color:var(--amber);font-weight:700;margin:0 0 4px}
+h1{font-size:var(--f-h1);line-height:1.08;font-weight:780;letter-spacing:-.015em;margin:0 0 calc(var(--s)*.3);max-width:32ch}
+.lede{font-size:var(--f-body);color:var(--ink-d2);margin:0;max-width:64ch}
+.scene{flex:1;display:none;gap:calc(var(--s)*2.4);margin-top:calc(var(--s)*1);align-items:start}
+.scene.on{display:grid}
+.s1{grid-template-columns:1fr 1fr}
+.s2,.s3{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr)}
+.s4{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+.nav{display:flex;align-items:center;gap:14px;padding:calc(var(--s)*.8) calc(var(--s)*4.2) calc(var(--s)*.8)}
+.nav .honest{font-size:var(--f-small);color:var(--ink-d2);margin-right:auto;max-width:90ch}
+.btn{display:inline-flex;align-items:center;gap:10px;border-radius:12px;padding:12px 22px;font-weight:700;font-size:var(--f-body);cursor:pointer;border:2px solid transparent}
+.btn.primary{background:var(--amber);color:var(--navy)}
+.btn.ghost{background:transparent;border-color:var(--line-d);color:var(--ink-d)}
+.btn:disabled{opacity:.4;cursor:default}
+
+/* ---------- feed columns ---------- */
+.col{background:var(--navy2);border:1px solid var(--line-d);border-radius:18px;padding:calc(var(--s)*.8) calc(var(--s)*1.3) calc(var(--s)*.9);min-width:0;display:flex;flex-direction:column}
+.colhead{display:flex;align-items:baseline;gap:12px;margin-bottom:calc(var(--s)*.2)}
+.who{font-size:var(--f-h2);font-weight:780;margin:0}
+.who.a{color:var(--a)} .who.b{color:var(--b)}
+.hist{font-size:var(--f-small);color:var(--ink-d2);margin:0 0 calc(var(--s)*.5)}
+.colnote{margin-left:auto;font-size:var(--f-small);color:var(--ink-d2);white-space:nowrap}
+.list{position:relative;height:calc(var(--slots,10) * var(--rh));transition:height .45s var(--ease)}
+.row{position:absolute;left:0;right:0;top:0;height:calc(var(--rh) - 6px);transform:translateY(calc(var(--slot,0) * var(--rh)));transition:transform .55s var(--ease),opacity .35s ease;display:grid;grid-template-columns:calc(var(--s)*3) minmax(0,1fr) auto;align-items:center;gap:calc(var(--s)*.7);padding:0 calc(var(--s)*.8);border-radius:10px;background:var(--navy3)}
+.row.out{opacity:0;pointer-events:none}
+.rk{font-weight:800;font-size:var(--f-body);color:var(--ink-d2);font-variant-numeric:tabular-nums}
+.ttl{font-weight:650;font-size:var(--f-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;min-width:0}
+.meta{font-weight:400;font-size:var(--f-small);color:var(--ink-d2);margin-left:calc(var(--s)*.9)}
+.tag{font-size:var(--f-small);font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.tag.hv{color:var(--ink-d);background:#21416A}
+.row.hit{background:#2A2410;box-shadow:inset 4px 0 0 var(--amber),0 0 0 1px #6B5014}
+.row.hit .rk{color:var(--amber)}
+.row.hit .tag.hv{background:var(--amber);color:var(--navy)}
+.gap{position:absolute;left:0;right:0;top:0;height:calc(var(--rh) - 6px);display:flex;align-items:center;gap:12px;padding:0 calc(var(--s)*.8);color:var(--ink-d2);font-size:var(--f-small);border:2px dashed var(--line-d);border-radius:10px;transform:translateY(calc(var(--slot,10) * var(--rh)));transition:opacity .35s ease, transform .55s var(--ease)}
+.gap.out{opacity:0}
+.trace{position:absolute;left:calc(var(--s)*-.8);width:4px;border-radius:2px;background:var(--amber);top:calc(var(--from,6) * var(--rh) + var(--rh) / 2);height:0;opacity:0;transition:height .55s var(--ease),opacity .2s}
+.trace.on{opacity:1;height:calc((var(--to,11) - var(--from,6)) * var(--rh))}
+
+/* ---------- focus panels (steps 2, 3) ---------- */
+.panel{background:var(--navy2);border:1px solid var(--line-d);border-radius:18px;padding:calc(var(--s)*1.6);display:flex;flex-direction:column;gap:calc(var(--s)*1);align-self:stretch}
+.jobtitle{font-size:var(--f-h2);font-weight:780;margin:0}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin:0;padding:0;list-style:none;color:var(--ink-d2);font-size:var(--f-body)}
+.facts b{color:var(--ink-d);font-weight:650}
+.also{margin:auto 0 0;font-size:var(--f-h2);font-weight:650;color:var(--ink-d)}
+.also .a{color:var(--a)}
+.ranks{display:flex;align-items:flex-end;gap:calc(var(--s)*2.2);margin-top:calc(var(--s)*1.2)}
+.rbox p{margin:0;font-size:var(--f-small);color:var(--ink-d2)}
+.big{font-size:var(--f-key);font-weight:800;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.big.dim{color:var(--ink-d2)}
+.big.am{color:var(--amber)}
+.arrow{font-size:var(--f-h1);color:var(--ink-d2);padding-bottom:calc(var(--s)*1)}
+.receipt{background:var(--paper);color:var(--ink-l);border-radius:18px;padding:calc(var(--s)*1.6);display:flex;flex-direction:column;gap:calc(var(--s)*1);box-shadow:0 18px 50px rgba(3,10,20,.45)}
+.receipt .rtop{font-size:var(--f-small);color:var(--ink-l2);margin:0}
+.receipt .alert{font-size:var(--f-h2);font-weight:750;line-height:1.25;margin:0}
+.receipt .alert .c{color:var(--amber-l)}
+.receipt .job{border:1px solid var(--line-l);border-left:5px solid var(--amber-l);border-radius:12px;padding:14px 16px;background:#FFFDF8}
+.receipt .job p{margin:0}
+.receipt .job .jt{font-weight:750}
+.receipt .job .jm{color:var(--ink-l2);font-size:var(--f-small)}
+.receipt .acts{display:flex;flex-wrap:wrap;gap:12px}
+.receipt .btn.primary{background:var(--ink-l);color:var(--paper)}
+.receipt .btn.ghost{border-color:var(--line-l);color:var(--ink-l)}
+.receipt .btn[aria-pressed="true"]{background:var(--amber-l);color:var(--paper)}
+.receipt .fine{font-size:var(--f-small);color:var(--ink-l2);margin:0}
+
+/* ---------- scorecard ---------- */
+.keycard{background:var(--navy2);border:1px solid var(--line-d);border-radius:18px;padding:calc(var(--s)*1.4) calc(var(--s)*1.6);display:flex;flex-direction:column;gap:calc(var(--s)*.6);align-self:stretch}
+.keycard .lab{font-size:var(--f-body);color:var(--ink-d2);margin:0}
+.keycard .big{font-size:max(64px,calc(var(--s)*6.2))}
+.split{display:flex;gap:calc(var(--s)*1.6);flex-wrap:wrap}
+.bars{display:grid;grid-template-columns:repeat(5,1fr);gap:calc(var(--s)*.6);align-items:end;margin-top:auto;height:max(110px,calc(var(--s)*12));padding-top:calc(var(--s)*1.2);border-bottom:2px solid var(--line-d)}
+.bars button{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;background:none;border:0;padding:0;cursor:pointer;color:var(--ink-d2)}
+.bars .bfill{width:100%;max-width:72px;border-radius:8px 8px 0 0;background:#2B527D;height:var(--h);transition:height .45s var(--ease),background .25s}
+.bars .bval{font-size:var(--f-small);font-weight:700;margin-bottom:6px;font-variant-numeric:tabular-nums}
+.bars button[aria-pressed="true"] .bfill{background:var(--amber)}
+.bars button[aria-pressed="true"] .bval{color:var(--amber)}
+.bcap{font-size:var(--f-small) !important;margin:2px 0 0 !important}
+.bticks{display:grid;grid-template-columns:repeat(5,1fr);gap:calc(var(--s)*.6);font-size:var(--f-small);color:#A9B8CC;text-align:center;font-variant-numeric:tabular-nums;margin-top:6px}
+#explore .bars{border-color:var(--line-l)}#explore .bars .bfill{background:#B9CBE0}#explore .bars button[aria-pressed="true"] .bfill{background:var(--amber-l)}#explore .bars button[aria-pressed="true"] .bval{color:var(--amber-l)}#explore .bars button,#explore .bcap{font-size:var(--f-small) !important;margin:2px 0 0 !important}
+.bticks{color:var(--ink-l2)}
+.split div p{margin:0;font-size:var(--f-small);color:var(--ink-d2)}
+.split .v{font-size:var(--f-h2);font-weight:780;font-variant-numeric:tabular-nums}
+.split .v.a{color:var(--a)}.split .v.b{color:var(--b)}
+.checks{display:flex;flex-direction:column;gap:calc(var(--s)*.55)}
+.check{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) auto;gap:calc(var(--s)*1);align-items:center;background:var(--navy2);border:1px solid var(--line-d);border-radius:14px;padding:calc(var(--s)*.55) calc(var(--s)*1.1)}
+.check h3{margin:0;font-size:var(--f-body);font-weight:750}
+.check .def{margin:2px 0 0;font-size:var(--f-small);color:var(--ink-d2)}
+.check .val{font-size:var(--f-h2);font-weight:800;font-variant-numeric:tabular-nums;margin:0}
+.check .ci{font-size:var(--f-small);color:var(--ink-d2);margin:0}
+.badge{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:var(--f-body);border-radius:999px;padding:6px 16px;white-space:nowrap}
+.badge svg{width:1em;height:1em}
+.badge.pass{background:#103D2E;color:var(--pass)}
+.badge.fail{background:#4A1C1C;color:var(--fail)}
+.slider{background:var(--navy2);border:1px solid var(--line-d);border-radius:14px;padding:calc(var(--s)*.6) calc(var(--s)*1.1)}
+.slider .top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.slider label{font-weight:700}
+.slider .bv{font-weight:800;color:var(--amber);font-variant-numeric:tabular-nums}
+.slider .ctx{margin-left:auto;color:var(--ink-d2);font-size:var(--f-small)}
+input[type=range]{width:100%;accent-color:var(--amber);height:34px;margin:6px 0 0}
+.ticks{display:flex;justify-content:space-between;font-size:var(--f-small);color:var(--ink-d2);font-variant-numeric:tabular-nums}
+.ticks span{width:4ch;text-align:center}.ticks span:first-child{text-align:left}.ticks span:last-child{text-align:right}
+.summary{font-weight:750;margin:0}
+
+/* ---------- explore (light) ---------- */
+#explore{display:none;background:var(--paper);color:var(--ink-l);min-height:100vh}
+body.explore{background:var(--paper)}
+body.explore #pitch{display:none}
+body.explore #explore{display:block}
+#explore .bar{background:var(--navy);padding-bottom:calc(var(--s)*1.1)}
+.wrap{max-width:1280px;margin:0 auto;padding:40px 32px 32px}
+#explore h1{font-size:max(30px,calc(var(--s)*2.4));max-width:28ch}
+#explore .lede{color:var(--ink-l2);font-size:max(17px,calc(var(--s)*1))}
+.ex-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:28px}
+.ex-card{background:#FBFCFE;border:1px solid var(--line-l);border-radius:16px;padding:24px}
+.ex-card.wide{grid-column:1/-1}
+.ex-card h2{font-size:max(21px,calc(var(--s)*1.3));margin:0 0 6px;font-weight:780}
+.ex-card .sub{color:var(--ink-l2);margin:0 0 16px;font-size:17px}
+#explore .check,#explore .slider,#explore .keycard{background:var(--paper);border-color:var(--line-l)}
+#explore .check .def,#explore .check .ci,#explore .ticks,#explore .slider .ctx,#explore .keycard .lab,#explore .split div p{color:var(--ink-l2)}
+#explore .slider .bv{color:var(--amber-l)}
+#explore input[type=range]{accent-color:var(--amber-l)}
+#explore .badge.pass{background:#DDF3E8;color:var(--pass-l)}
+#explore .badge.fail{background:#FBE3E1;color:var(--fail-l)}
+#explore .split .v.a{color:var(--a-l)}#explore .split .v.b{color:var(--b-l)}
+#explore .check h3,#explore .check .val{color:var(--ink-l)}
+#explore .check,#explore .badge{font-size:17px}
+#explore .check .val{font-size:22px}
+#explore .check h3{font-size:18px}
+.thr{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:15px;color:var(--ink-l2)}
+.thr input{width:9ch;padding:5px 8px;border:1px solid var(--line-l);border-radius:8px;background:#fff;color:var(--ink-l);font-variant-numeric:tabular-nums}
+.ex-sc{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:20px}
+#explore .keycard .big{font-size:72px;color:var(--ink-l)}
+#explore .keycard{padding:22px}
+table.fx{width:100%;border-collapse:collapse;font-size:17px}
+table.fx th,table.fx td{text-align:left;padding:12px 10px;border-top:1px solid var(--line-l);vertical-align:middle}
+table.fx th{font-size:15px;color:var(--ink-l2);font-weight:650}
+table.fx .st{font-size:15px;color:var(--ink-l2);display:block;font-weight:400;margin-top:2px}
+.mk{font-weight:750;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mk.p{color:var(--pass-l)}.mk.f{color:var(--fail-l)}
+.rec{margin:16px 0 0;padding:14px 16px;border-left:5px solid var(--amber-l);background:#FFF6E5;border-radius:10px;font-weight:650}
+ol.how{margin:0;padding-left:1.3em;display:grid;gap:8px}
+dl.defs{margin:18px 0 0;display:grid;gap:10px}
+dl.defs dt{font-weight:750}
+dl.defs dd{margin:0;color:var(--ink-l2)}
+ul.lim{margin:0;padding-left:1.2em;display:grid;gap:8px}
+.feeds3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.mini h3{font-size:17px;margin:0 0 8px}
+.mini h3.a{color:var(--a-l)}.mini h3.b{color:var(--b-l)}
+.mini ol{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.mini li{display:grid;grid-template-columns:2.6ch minmax(0,1fr);gap:8px;font-size:15px;padding:6px 8px;border-radius:8px;background:var(--paper)}
+.mini li .r{font-weight:750;color:var(--ink-l2);font-variant-numeric:tabular-nums}
+.mini li.hit{background:#FFF1D6;box-shadow:inset 4px 0 0 var(--amber-l)}
+.mini li.gapli{background:none;border:1px dashed var(--line-l);color:var(--ink-l2)}
+.mini small{display:block;color:var(--ink-l2)}
+footer.foot{padding:20px 32px 28px;max-width:1280px;margin:0 auto;font-size:15px;color:var(--ink-l2)}
+footer.foot p{margin:0 0 4px}
+footer.foot .lic{font-weight:700;color:var(--ink-l)}
+
+/* ---------- hint ---------- */
+.hint{position:fixed;left:50%;bottom:calc(var(--s)*5.5);transform:translateX(-50%);background:rgba(16,38,63,.96);border:1px solid var(--line-d);color:var(--ink-d);border-radius:14px;padding:12px 20px;font-size:var(--f-small);display:flex;gap:18px;flex-wrap:wrap;justify-content:center;transition:opacity .6s ease;z-index:20;max-width:calc(100vw - 32px)}
+.hint kbd{display:inline-block;min-width:1.8em;text-align:center;border:1px solid var(--line-d);border-bottom-width:3px;border-radius:6px;padding:1px 6px;margin-right:6px;font:inherit;font-weight:700;color:var(--ink-d)}
+.hint.gone{opacity:0;pointer-events:none}
+
+/* ---------- small screens ---------- */
+@media (max-width:900px){
+  :root{--f-key:56px;--f-h1:30px;--f-h2:20px;--f-body:16px;--f-small:14px;--rh:78px}
+  .tag{font-size:12.5px;padding:2px 8px}
+  .row{grid-template-columns:44px minmax(0,1fr) auto;gap:8px;padding:0 10px}
+  .gap{padding:0 10px}
+  .col,.panel,.receipt,.keycard{padding:16px;border-radius:14px}
+  .scene{gap:16px;margin-top:14px}
+  .check{padding:12px 14px;gap:8px}
+  .slider{padding:12px 14px}
+  .trace{left:-10px}
+  .ranks{margin-top:8px}
+  .also{margin-top:4px}
+  .split{gap:18px}
+  .bars{gap:6px}.bticks{gap:6px}
+  .hint{display:none}
+  .bar{flex-wrap:wrap;padding:12px 16px 0}
+  .steps{order:3;width:100%;margin-left:0;justify-content:space-between}
+  .steps .lbl{display:none}
+  .modes{margin-left:auto}
+  .stage{padding:16px 16px 0}
+  .head{min-height:0}
+  .scene.on{grid-template-columns:minmax(0,1fr)}
+  .nav{padding:14px 16px 18px;flex-wrap:wrap}
+  .nav .honest{width:100%;order:3}
+  .check{grid-template-columns:minmax(0,1fr) auto}
+  .check .mid{grid-column:1/2}
+  .ex-grid,.ex-sc,.feeds3{grid-template-columns:minmax(0,1fr)}
+  .wrap{padding:24px 16px}
+  footer.foot{padding:16px 16px 24px}
+  .colnote{white-space:normal;text-align:right}
+  table.fx{font-size:15px}
+  table.fx th,table.fx td{padding:10px 6px}
+  .ranks{gap:18px}
+  .ttl{white-space:normal}
+  .meta{display:block;margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none !important;animation:none !important}
+}
+</style>
+</head>
+<body>
+<a class="sr" href="#explore-main">Skip to the full audit</a>
+<div id="live" class="sr" aria-live="polite" aria-atomic="true"></div>
+
+<!-- =================== PITCH MODE =================== -->
+<div id="pitch">
+  <header class="bar">
+    <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#10263F"/><rect x="7" y="8" width="7" height="16" rx="2" fill="#6FA3FF"/><rect x="18" y="8" width="7" height="16" rx="2" fill="#FF8F5A"/><circle cx="21.5" cy="22" r="3" fill="#F5A524"/></svg>Opportunity Blindspot Audit</div>
+    <ol class="steps" aria-label="Pitch steps">
+      <li><button data-go="1"><span class="n">1</span><span class="lbl">Two feeds</span></button></li>
+      <li><button data-go="2"><span class="n">2</span><span class="lbl">Invisible rejection</span></button></li>
+      <li><button data-go="3"><span class="n">3</span><span class="lbl">The receipt</span></button></li>
+      <li><button data-go="4"><span class="n">4</span><span class="lbl">The audit</span></button></li>
+    </ol>
+    <div class="modes" role="group" aria-label="Mode"><button data-mode="pitch" aria-pressed="true">Pitch</button><button data-mode="explore" aria-pressed="false">Explore</button></div>
+  </header>
+
+  <main class="stage" id="stage">
+    <div class="head">
+      <p class="kicker" id="kicker"></p>
+      <h1 id="headline" tabindex="-1"></h1>
+      <p class="lede" id="lede"></p>
+    </div>
+
+    <!-- step 1 -->
+    <section class="scene s1" data-scene="1" aria-label="Twin A and Twin B feeds">
+      <div class="col"><div class="colhead"><h2 class="who a">Twin A</h2><span class="colnote">Personalized Top 10</span></div><p class="hist" id="histA"></p><div class="list" id="listA"></div></div>
+      <div class="col"><div class="colhead"><h2 class="who b">Twin B</h2><span class="colnote">Personalized Top 10</span></div><p class="hist" id="histB"></p><div class="list" id="listB1"></div></div>
+    </section>
+
+    <!-- step 2 -->
+    <section class="scene s2" data-scene="2" aria-label="The missed role">
+      <div class="panel">
+        <p class="hist" style="margin:0">The role Twin B never sees</p>
+        <p class="jobtitle" id="mTitle"></p>
+        <ul class="facts" id="mFacts"></ul>
+        <p class="also" id="mAlso"></p>
+        <div class="ranks">
+          <div class="rbox"><div class="big dim num" id="rk0"></div><p>by profile match</p></div>
+          <div class="arrow" aria-hidden="true">to</div>
+          <div class="rbox"><div class="big am num" id="rkB"></div><p>in Twin B's feed</p></div>
+        </div>
+      </div>
+      <div class="col"><div class="colhead"><h2 class="who b">Twin B</h2><span class="colnote" id="b2note"></span></div><div class="list" id="listB2"></div></div>
+    </section>
+
+    <!-- step 3 -->
+    <section class="scene s3" data-scene="3" aria-label="Opportunity receipt">
+      <div class="receipt" role="region" aria-label="Twin B's Opportunity Receipt">
+        <p class="rtop">Your Opportunity Receipt</p>
+        <p class="alert"><span class="c num" id="nMiss"></span> role that matches your profile was ranked lower because of your browsing history. Show it?</p>
+        <div class="acts">
+          <button class="btn ghost" id="showIt" aria-expanded="false" aria-controls="rJob">Show it</button>
+          <button class="btn primary" id="profileOnly" aria-pressed="false">Rank by my profile only</button>
+        </div>
+        <div class="job" id="rJob" hidden><p class="jt" id="rJt"></p><p class="jm" id="rJm"></p></div>
+        <p class="fine" id="rFine"></p>
+      </div>
+      <div class="col"><div class="colhead"><h2 class="who b">Twin B</h2><span class="colnote" id="b3note"></span></div><div class="list" id="listB3"></div></div>
+    </section>
+
+    <!-- step 4 -->
+    <section class="scene s4" data-scene="4" aria-label="Operator audit scorecard">
+      <div class="keycard" id="keyP"></div>
+      <div class="checks"><div id="checksP" class="checks"></div><div class="slider" id="sliderP"></div></div>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="Pitch controls">
+    <p class="honest">Precomputed test-set results from a controlled simulation on JTH v1.1 (European job-platform data). Not an audit of a real platform; it does not rank live jobs.</p>
+    <button class="btn ghost" id="prev">Back</button>
+    <button class="btn primary" id="next">Next</button>
+  </nav>
+</div>
+
+<!-- =================== EXPLORE MODE =================== -->
+<div id="explore">
+  <header class="bar">
+    <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#10263F"/><rect x="7" y="8" width="7" height="16" rx="2" fill="#6FA3FF"/><rect x="18" y="8" width="7" height="16" rx="2" fill="#FF8F5A"/><circle cx="21.5" cy="22" r="3" fill="#F5A524"/></svg>Opportunity Blindspot Audit</div>
+    <div class="modes" role="group" aria-label="Mode" style="margin-left:auto"><button data-mode="pitch" aria-pressed="false">Pitch</button><button data-mode="explore" aria-pressed="true">Explore</button></div>
+  </header>
+  <main class="wrap" id="explore-main">
+    <h1>Audit a job feed with two identical twins</h1>
+    <p class="lede">Two copies of one real profile differ only in browsing history. If their feeds differ, history caused it. Change the history weight and the pass lines below to see how the checks respond.</p>
+    <div class="ex-grid">
+      <section class="ex-card wide" aria-labelledby="h-sc">
+        <h2 id="h-sc">Operator Audit Scorecard</h2>
+        <p class="sub">Test set, <span class="num" id="exN"></span> twin pairs. Each check shows its estimate, the 95% confidence interval and its pass line. Edit a pass line to change the verdict.</p>
+        <div class="ex-sc"><div class="keycard" id="keyE"></div><div class="checks"><div id="checksE" class="checks"></div><div class="slider" id="sliderE"></div></div></div>
+      </section>
+      <section class="ex-card wide" aria-labelledby="h-fx">
+        <h2 id="h-fx">Fixes we tested</h2>
+        <p class="sub">Each fix was tuned on one half of the data and scored once on the other half, against tests written down before any result existed.</p>
+        <div style="overflow-x:auto"><table class="fx" id="fxTable"></table></div>
+        <p class="rec">No fix passed all three tests, so we recommend the audit plus a profile-only control.</p>
+      </section>
+      <section class="ex-card wide" aria-labelledby="h-tw">
+        <h2 id="h-tw">The example twin pair</h2>
+        <p class="sub" id="twSub"></p>
+        <div class="feeds3" id="feeds3"></div>
+      </section>
+      <section class="ex-card" aria-labelledby="h-how">
+        <h2 id="h-how">How it works</h2>
+        <ol class="how">
+          <li><b>Clone.</b> Copy one candidate profile into two twins.</li>
+          <li><b>Vary history only.</b> Twin A browsed <span class="num" id="hk1"></span> senior roles; Twin B browsed <span class="num" id="hk2"></span> entry-level roles.</li>
+          <li><b>Rank.</b> Same ranker, same pool of the <span class="num" id="pool1"></span> jobs that best match the profile.</li>
+          <li><b>Compare.</b> Check each feed against the twin's own profile-only Top <span class="num" id="tk1"></span>.</li>
+          <li><b>Score.</b> Three exposure checks plus a compatibility guard, each with a 95% CI and a pass line.</li>
+        </ol>
+        <dl class="defs">
+          <dt>Twin Exposure Gap</dt><dd>How many more high-value roles Twin A sees in its Top 10 than Twin B, in percentage points.</dd>
+          <dt>Blindspot Rate</dt><dd>Share of entry-history twins who lose at least one high-value role their own profile would have shown.</dd>
+          <dt>Mobility Exposure</dt><dd>Share of the entry twin's Top 10 that is one level up (Mid), so the next career step stays visible.</dd>
+          <dt>Compatibility guard</dt><dd>How much worse the Top 10 matches the profile, so nobody can look fair by showing bad matches.</dd>
+        </dl>
+      </section>
+      <section class="ex-card" aria-labelledby="h-lim">
+        <h2 id="h-lim">Method and limits</h2>
+        <ul class="lim">
+          <li><b>Data.</b> JTH v1.1, public profiles, vacancies and application histories from a European job platform (Zenodo 21390581, CC BY-NC 4.0).</li>
+          <li><b>Split.</b> Candidates split 50/50 by ID into a tune half and a test half. Every number here is from the test half.</li>
+          <li><b>Seed.</b> <span class="num" id="seed"></span> for all sampling; <span class="num" id="boot"></span> bootstrap resamples for every CI.</li>
+          <li><b>Pre-registration.</b> Pass lines and decision rules were written and committed before any result existed.</li>
+          <li><b>Limits.</b> A controlled simulation, not an audit of a real platform. European data, not Canadian. Twin histories are synthetic. Compatibility is a text-similarity proxy, not verified eligibility. We use no demographic fields and make no claim about any group.</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+  <footer class="foot">
+    <p class="lic">Data: JTH v1.1, CC BY-NC 4.0. Non-commercial research prototype. Precomputed test-set results; does not rank live jobs.</p>
+    <p>Controlled simulation on European job-platform data. Not an audit of a real platform.</p>
+  </footer>
+</div>
+
+<div class="hint" id="hint" role="note" aria-label="Keyboard shortcuts"><span><kbd>&rarr;</kbd>Next</span><span><kbd>&larr;</kbd>Back</span><span><kbd>P</kbd>Pitch or explore</span><span><kbd>R</kbd>Restart</span><span><kbd>F</kbd>Full screen</span></div>
+
+<script>
+"use strict";
+const D = {"meta":{"dataset":"JTH v1.1","seed":20261115,"n_pairs":1200,"n_heldout":3769,"bootstrap":3000,"pool_size":100,"topk":10,"hist_k":5,"betas":["0.00","0.15","0.30","0.45","0.60"],"beta_default":"0.45"},"twins":{"pair_index":0,"pool_size":100,"history_A":["Senior backend developer","Senior full stack developer","Senior backend developer","Senior full stack developer","Senior backend developer"],"history_B":["Junior frontend developer","Junior full stack developer","Junior backend developer","Junior backend developer","Junior backend developer"],"feed_profile":[{"title":"Senior full stack developer","salary_band":"EUR 50k to 55k","salary_source":"posted","contract":"Permanent","remote":false,"seniority":"Senior","match":0.589,"profile_rank":1,"high_value":false,"id":1656,"rank_profile":1,"rank_A":1,"rank_B":2,"missed_by_B":false},{"title":"Mid backend developer","salary_band":"EUR 45k to 50k","salary_source":"LLM estimate","contract":"Freelance","remote":false,"seniority":"Mid","match":0.576,"profile_rank":2,"high_value":false,"id":1142,"rank_profile":2,"rank_A":2,"rank_B":1,"missed_by_B":false},{"title":"Mid backend developer","salary_band":"EUR 55k to 60k","salary_source":"LLM estimate","contract":"Freelance","remote":true,"seniority":"Mid","match":0.526,"profile_rank":3,"high_value":false,"id":3734,"rank_profile":3,"rank_A":12,"rank_B":12,"missed_by_B":false},{"title":"Senior software engineer","salary_band":"EUR 75k to 80k","salary_source":"posted","contract":"Permanent","remote":true,"seniority":"Senior","match":0.522,"profile_rank":4,"high_value":true,"id":834,"rank_profile":4,"rank_A":3,"rank_B":6,"missed_by_B":false},{"title":"Mid full stack developer","salary_band":"EUR 60k to 65k","salary_source":"LLM estimate","contract":"Freelance","remote":true,"seniority":"Mid","match":0.521,"profile_rank":5,"high_value":false,"id":2440,"rank_profile":5,"rank_A":19,"rank_B":24,"missed_by_B":false},{"title":"Senior backend developer","salary_band":"EUR 60k to 65k","salary_source":"LLM estimate","contract":"Freelance","remote":false,"seniority":"Senior","match":0.518,"profile_rank":6,"high_value":false,"id":2165,"rank_profile":6,"rank_A":6,"rank_B":13,"missed_by_B":false},{"title":"Senior full stack developer","salary_band":"EUR 65k to 70k","salary_source":"posted","contract":"Permanent","remote":true,"seniority":"Senior","match":0.517,"profile_rank":7,"high_value":true,"id":2384,"rank_profile":7,"rank_A":10,"rank_B":21,"missed_by_B":true},{"title":"Mid full stack developer","salary_band":"EUR 50k to 55k","salary_source":"posted","contract":"Permanent","remote":false,"seniority":"Mid","match":0.516,"profile_rank":8,"high_value":false,"id":4751,"rank_profile":8,"rank_A":9,"rank_B":19,"missed_by_B":false},{"title":"Mid full stack developer","salary_band":"EUR 50k to 55k","salary_source":"posted","contract":"Permanent","remote":true,"seniority":"Mid","match":0.514,"profile_rank":9,"high_value":false,"id":3752,"rank_profile":9,"rank_A":14,"rank_B":9,"missed_by_B":false},{"title":"Senior full stack developer","salary_band":"EUR 50k to 55k","salary_source":"posted","contract":"Permanent","remote":true,"seniority":"Senior","match":0.514,"profile_rank":10,"high_value":false,"id":5753,"rank_profile":10,"rank_A":11,"rank_B":25,"missed_by_B":false}],"feed_A":[{"title":"Senior full stack developer","salary_band":"EUR 50k to 55k","salary_source":"posted","contract":"Permanent","remote":false,"seniority":"Senior","match":0.589,"profile_rank":1,"high_value":false,"id":1656,"rank_profile":1,"rank_A":1,"rank_B":2,"missed_by_B":false},{"title":"Mid backend developer","salary_band":"EUR 45k to 50k","salary_source":"LLM estimate","contract":"Freelance","remote":false,"seniority":"Mid","match":0.576,"profile_rank":2,"high_value":false,"id":1142,"rank_profile":2,"rank_A":2,"rank_B":1,"missed_by_B":false},{"title":"Senior software engineer","salary_band":"EUR 75k to 80k","salary_source":"posted","contract":"Permanent","remote":true,"seniority":"Senior","match":0.522,"profile_rank":4,"high_value":true,"id":834,"rank_profile":4,"rank_A":3,"rank_B":6,"missed_by_B":false},{"title":"Senior full stack developer","salary_band":"EUR 70k to 75k","salary_source":"posted","contract":"Permanent","remote":false,"seniority":"Senior","match":0.51,"profile_rank":13,"high_value":false,"id":119,"rank_profile":13,"rank_A":4,"rank_B":8,"missed_by_B":false},{"title":"Senior backend developer","salary_band":"EUR 50k to 55k","salary_source":"posted","contract":"Permanent","remote":false,"seniority":"Senior","match":0.505,"profile_rank":16,"high_value":false,"id":466,"rank_profile":16,"rank_A":5,"rank_B":7,"missed_by_B":false},{"title":"Senior backend developer","salary_band":"EUR 60k to 65k","salary_source":"LLM estimate","contract":"Freelance","remote":false,"seniority":"Senior","match":0.518,"profile_rank":6,"high_value":false,"id":2165,"rank_profile":6,"rank_A":6,"rank_B":13,"missed_by_B":false},{"title":"Senior full stack developer","salary_band":"EUR 55k to 60k","salary_source":"LLM estimate","contract":"Freelance","remote":true,"seniority":"Senior","match":0.506,"profile_rank":15,"high_value":false,"id":757,"rank_profile":15,"rank_A":7,"rank_B":28,"missed_by_B":false},{"title":"Senior backend developer","salary_band":"EUR 65k to 70k","salary_source":"LLM estimate","contract":"Freelance","remote":true,"seniority":"Senior","match":0.495,"profile_rank":20,"high_value":false,"id":973,"rank_profile":20,"rank_A":8,"rank_B":54,"missed_by_B":false},{"title":"Mid full stack developer","salary_band":"EUR 50k to 55k","salary_source":"posted","contract":"Permanent","remote":false,"seniority":"Mid","match":0.516,"profile_rank":8,"high_value":false,"id":4751,"rank_profile":8,"rank_A":9,"rank_B":19,"missed_by_B":false},{"title":"Senior full stack developer","salary_band":"EUR 65k to 70k","salary_source":"posted","contract":"Permanent","remote":true,"seniority":"Senior","match":0.517,"profile_rank":7,"high_value":true,"id":2384,"rank_profile":7,"rank_A":10,"rank_B":21,"missed_by_B":true}],"feed_B":[{"title":"Mid backend developer","salary_band":"EUR 45k to 50k","salary_source":"LLM estimate","contract":"Freelance","remote":false,"seniority":"Mid","match":0.576,"profile_rank":2,"high_value":false,"id":1142,"rank_profile":2,"rank_A":2,"rank_B":1,"missed_by_B":false},{"title":"Senior full stack developer","salary_band":"EUR 50k to 55k","salary_source":"posted","contract":"Permanent","remote":false,"seniority":"Senior","match":0.589,"profile_rank":1,"high_value":false,"id":1656,"rank_profile":1,"rank_A":1,"rank_B":2,"missed_by_B":false},{"title":"Junior full stack developer","salary_band":"EUR 35k to 40k","salary_source":"posted","contract":"Permanent","remote":false,"seniority":"Junior","match":0.497,"profile_rank":19,"high_value":false,"id":1369,"rank_profile":19,"rank_A":13,"rank_B":3,"missed_by_B":false},{"title":"Junior backend developer","salary_band":"EUR 25k to 30k","salary_source":"posted","contract":"Permanent","remote":true,"seniority":"Junior","match":0.512,"profile_rank":11,"high_value":false,"id":666,"rank_profile":11,"rank_A":15,"rank_B":4,"missed_by_B":false},{"title":"Junior backend developer","salary_band":"EUR 35k to 40k","salary_source":"posted","contract":"Permanent","remote":true,"seniority":"Junior","match":0.512,"profile_rank":12,"high_value":false,"id":688,"rank_profile":12,"rank_A":16,"rank_B":5,"missed_by_B":false},{"title":"Senior software engineer","salary_band":"EUR 75k to 80k","salary_source":"posted","contract":"Permanent","remote":true,"seniority":"Senior","match":0.522,"profile_rank":4,"high_value":true,"id":834,"rank_profile":4,"rank_A":3,"rank_B":6,"missed_by_B":false},{"title":"Senior backend developer","salary_band":"EUR 50k to 55k","salary_source":"posted","contract":"Permanent","remote":false,"seniority":"Senior","match":0.505,"profile_rank":16,"high_value":false,"id":466,"rank_profile":16,"rank_A":5,"rank_B":7,"missed_by_B":false},{"title":"Senior full stack developer","salary_band":"EUR 70k to 75k","salary_source":"posted","contract":"Permanent","remote":false,"seniority":"Senior","match":0.51,"profile_rank":13,"high_value":false,"id":119,"rank_profile":13,"rank_A":4,"rank_B":8,"missed_by_B":false},{"title":"Mid full stack developer","salary_band":"EUR 50k to 55k","salary_source":"posted","contract":"Permanent","remote":true,"seniority":"Mid","match":0.514,"profile_rank":9,"high_value":false,"id":3752,"rank_profile":9,"rank_A":14,"rank_B":9,"missed_by_B":false},{"title":"Mid software engineer","salary_band":"EUR 45k to 50k","salary_source":"posted","contract":"Permanent","remote":false,"seniority":"Mid","match":0.507,"profile_rank":14,"high_value":false,"id":3501,"rank_profile":14,"rank_A":18,"rank_B":10,"missed_by_B":false}],"missed":{"title":"Senior full stack developer","salary_band":"EUR 65k to 70k","salary_source":"posted","contract":"Permanent","remote":true,"seniority":"Senior","match":0.517,"profile_rank":7,"high_value":true,"id":2384,"rank_profile":7,"rank_A":10,"rank_B":21,"missed_by_B":true},"n_missed":1,"n_with_blindspot":549,"n_twins":1200},"per_beta":{"0.00":{"TEG_pp":[0.0,0.0,0.0],"placebo_pp":[0.0,0.0,0.0],"hv_A_pct":[18.875,18.133125,19.625],"hv_B_pct":[18.875,18.099791666666665,19.666666666666664],"blindspot_rate_pct":[0.0,0.0,0.0],"mobility_exposure_pct":[46.85833333333333,45.558125,48.125416666666666],"compat_cost_pct":[0.0,0.0,0.0],"hit10_pct":[5.412576280180419,4.722738126824091,6.128946670204298]},"0.15":{"TEG_pp":[1.2083333333333333,0.8747916666666666,1.5333333333333332],"placebo_pp":[0.0,0.0,0.0],"hv_A_pct":[19.633333333333336,18.891458333333333,20.433541666666667],"hv_B_pct":[18.425000000000004,17.666458333333335,19.200208333333336],"blindspot_rate_pct":[15.416666666666668,13.333333333333334,17.5],"mobility_exposure_pct":[46.09166666666667,44.76666666666667,47.38333333333333],"compat_cost_pct":[0.11315515418400812,0.10573421783052817,0.12114763725064898],"hit10_pct":[5.810559830193685,5.067657203502256,6.553462456885115]},"0.30":{"TEG_pp":[3.108333333333333,2.591666666666667,3.6333333333333337],"placebo_pp":[0.0,0.0,0.0],"hv_A_pct":[20.525000000000002,19.691458333333337,21.33354166666667],"hv_B_pct":[17.416666666666668,16.64166666666667,18.175],"blindspot_rate_pct":[31.5,28.916666666666668,34.08333333333333],"mobility_exposure_pct":[44.99166666666666,43.76666666666667,46.233333333333334],"compat_cost_pct":[0.621286539653576,0.5903214792818848,0.6557447622535661],"hit10_pct":[6.633059166887769,5.863624303528788,7.455558503581852]},"0.45":{"TEG_pp":[5.25,4.508333333333334,5.949999999999999],"placebo_pp":[0.0,0.0,0.0],"hv_A_pct":[21.766666666666666,20.925,22.608541666666667],"hv_B_pct":[16.51666666666667,15.74166666666667,17.258333333333333],"blindspot_rate_pct":[45.75,42.833333333333336,48.583333333333336],"mobility_exposure_pct":[42.56666666666667,41.333333333333336,43.791666666666664],"compat_cost_pct":[2.0248860996778584,1.9373417043143937,2.114811819081305],"hit10_pct":[7.90660652693022,7.110639426903688,8.755638100291854]},"0.60":{"TEG_pp":[8.066666666666666,7.133125,9.016666666666666],"placebo_pp":[0.0,0.0,0.0],"hv_A_pct":[23.291666666666664,22.39166666666667,24.175208333333334],"hv_B_pct":[15.225,14.51666666666667,15.950208333333336],"blindspot_rate_pct":[59.0,56.331250000000004,61.75000000000001],"mobility_exposure_pct":[38.48333333333333,37.266458333333325,39.63354166666667],"compat_cost_pct":[4.983744843031424,4.799413497371496,5.179617536476392],"hit10_pct":[15.919342000530644,14.751923587158398,17.113292650570443]}},"h1_gain_pp":[2.494030246749801,1.9103210400636774,3.104271690103476],"defaults":{"TEG_pp":2.62,"blindspot_rate_pct":22.9,"mobility_drop_pp":2.14,"compat_cost_pct":2.0},"fix_criteria":{"gap_cut_min_pct":50.0,"compat_max_pct":2.0,"hit10_kept_min_pct":75.0},"fixes":[{"name":"History cap","setting":"beta 0.3 for high-value roles","gap_cut_pct":75.39682539682539,"compat_cost_pct":1.815262028788578,"hit10_kept_pct":71.27659574468088,"pass_gap":true,"pass_compat":true,"pass_hit":false,"pass":false},{"name":"Profile floor","setting":"keep profile matches scoring at least 0.7","gap_cut_pct":34.285714285714285,"compat_cost_pct":1.2128193578389124,"hit10_kept_pct":78.72340425531917,"pass_gap":false,"pass_compat":true,"pass_hit":true,"pass":false},{"name":"Exploration slots","setting":"3 of 10 slots for roles outside the history","gap_cut_pct":66.82539682539682,"compat_cost_pct":1.920191873677124,"hit10_kept_pct":45.74468085106386,"pass_gap":true,"pass_compat":true,"pass_hit":false,"pass":false}]};
+const $ = id => document.getElementById(id);
+const RM = window.matchMedia("(prefers-reduced-motion: reduce)");
+const T = D.twins, PB = D.per_beta, M = T.missed;
+const f1 = x => x.toFixed(1), f2 = x => x.toFixed(2);
+const live = msg => { $("live").textContent = ""; setTimeout(() => { $("live").textContent = msg; }, 30); };
+const state = { step: 1, beta: D.meta.beta_default, thr: { ...D.defaults }, profileOnly: false, mode: "pitch" };
+
+/* ---------- steps copy ---------- */
+const STEPS = {
+  1: { k: "Step 1 of 4", h: "Same person, two feeds.", l: "One real profile, copied twice. Only the browsing history differs." },
+  2: { k: "Step 2 of 4", h: "The invisible rejection.", l: "History pushes a matching, high-value role out of Twin B's Top 10." },
+  3: { k: "Step 3 of 4", h: "The receipt.", l: "Twin B can see what was hidden, and switch it off." },
+  4: { k: "Step 4 of 4", h: "The audit.", l: "Four checks, each with a 95% CI and a pass line, at every history weight." },
+};
+
+/* ---------- feed lists ---------- */
+const meta = c => `${c.salary_band}, ${c.contract.toLowerCase()}${c.remote ? ", remote" : ""}`;
+function rowEl(c) {
+  const r = document.createElement("div");
+  r.className = "row"; r.dataset.id = c.id;
+  if (c.id === M.id) r.classList.add("hit");
+  r.innerHTML = `<span class="rk num"></span><span class="ttl">${c.title}<span class="meta num">${meta(c)}</span></span>${c.high_value ? '<span class="tag hv">High value</span>' : '<span></span>'}`;
+  return r;
+}
+/* A list shows one ordering; rows are keyed by job id so a new ordering slides rows to their new slots. */
+function makeList(el, cards) {
+  const rows = new Map();
+  for (const c of cards) if (!rows.has(c.id)) { const r = rowEl(c); rows.set(c.id, r); el.appendChild(r); }
+  const gap = document.createElement("div"); gap.className = "gap out"; el.appendChild(gap);
+  const tr = document.createElement("div"); tr.className = "trace"; tr.setAttribute("aria-hidden", "true"); el.appendChild(tr);
+  return { el, rows, gap, tr };
+}
+function order(L, list, opts = {}) {
+  /* list: [{id, rank}] in slot order; opts.gapAt: slot index for the 'ranks not shown' marker */
+  const shown = new Set(list.map(x => x.id));
+  L.rows.forEach((r, id) => { if (!shown.has(id)) r.classList.add("out"); });
+  list.forEach((x, i) => {
+    const r = L.rows.get(x.id); r.classList.remove("out");
+    r.style.setProperty("--slot", i); r.querySelector(".rk").textContent = "#" + x.rank;
+  });
+  if (opts.gapAt != null) { L.gap.classList.remove("out"); L.gap.style.setProperty("--slot", opts.gapAt); L.gap.textContent = opts.gapText; }
+  else L.gap.classList.add("out");
+  L.el.style.setProperty("--slots", list.length + (opts.gapAt != null && opts.gapAt >= list.length ? 1 : 0));
+}
+const all = [...T.feed_A, ...T.feed_B, ...T.feed_profile, M];
+const profileOrder = T.feed_profile.map(c => ({ id: c.id, rank: c.rank_profile }));
+const bPers = T.feed_B.map(c => ({ id: c.id, rank: c.rank_B }));
+const gapText = `Ranks 11 to ${M.rank_B - 1} not shown`;
+const listA = makeList($("listA"), T.feed_A), listB1 = makeList($("listB1"), all);
+const listB2 = makeList($("listB2"), all), listB3 = makeList($("listB3"), all);
+order(listA, T.feed_A.map(c => ({ id: c.id, rank: c.rank_A })));
+const shortHist = h => { const u = [...new Set(h)]; return `Browsed ${h.length} roles: ${u.slice(0, 2).join(", ")}${u.length > 2 ? " and similar" : ""}`; };
+$("histA").textContent = shortHist(T.history_A);
+$("histB").textContent = shortHist(T.history_B);
+function bMissingSlot(L) {
+  order(L, bPers, { gapAt: 10, gapText: `Not in Twin B's Top 10: ${M.title}, ${M.salary_band}` });
+}
+function bPersonal(L) {
+  /* Twin B's real Top 10, then the 'ranks not shown' marker, then the missed role at its real rank */
+  order(L, bPers, { gapAt: 10, gapText });
+  const r = L.rows.get(M.id);
+  r.classList.remove("out"); r.style.setProperty("--slot", 11); r.querySelector(".rk").textContent = "#" + M.rank_B;
+  L.el.style.setProperty("--slots", 12);
+}
+function bProfile(L) { order(L, profileOrder); }
+
+/* ---------- step 2 panel ---------- */
+$("mTitle").textContent = M.title;
+$("mFacts").innerHTML = `<li><b class="num">${M.salary_band}</b> (${M.salary_source})</li><li><b>${M.contract}</b> contract</li><li>${M.remote ? "<b>Remote</b> possible" : "On-site"}</li><li>Profile match <b class="num">${f2(M.match)}</b></li><li><b>High value</b> in this pool</li>`;
+$("mAlso").innerHTML = `Same profile, so <span class="a">Twin A</span> still sees it at <span class="num">#${M.rank_A}</span>. Twin B does not.`;
+let anim = [];
+const later = (fn, ms) => anim.push(setTimeout(fn, RM.matches ? 0 : ms));
+const clearAnim = () => { anim.forEach(clearTimeout); anim = []; };
+function countTo(el, from, to, ms, fmt) {
+  if (RM.matches || ms === 0) { el.textContent = fmt(to); return; }
+  const t0 = performance.now();
+  const tick = now => { const p = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(from + (to - from) * e); if (p < 1) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+}
+function playStep2() {
+  const L = listB2;
+  $("rk0").textContent = "#" + M.rank_profile; $("rkB").textContent = "#" + M.rank_profile;
+  $("b2note").textContent = "Profile-only order";
+  L.tr.classList.remove("on");
+  bProfile(L);
+  later(() => {
+    $("b2note").textContent = "Personalized order";
+    bPersonal(L);
+    L.tr.style.setProperty("--from", M.rank_profile - 1); L.tr.style.setProperty("--to", 11);
+    L.tr.classList.add("on");
+    countTo($("rkB"), M.rank_profile, M.rank_B, 550, v => "#" + Math.round(v));
+    live(`${M.title} moves from rank ${M.rank_profile} by profile to rank ${M.rank_B} in Twin B's feed.`);
+  }, 900);
+}
+
+/* ---------- step 3 receipt ---------- */
+$("nMiss").textContent = T.n_missed;
+$("rJt").textContent = M.title;
+$("rJm").textContent = `${meta(M)}. #${M.rank_profile} by your profile, now #${M.rank_B} in your feed.`;
+$("rFine").innerHTML = `<span class="num">${T.n_with_blindspot.toLocaleString("en-US")}</span> of <span class="num">${T.n_twins.toLocaleString("en-US")}</span> entry-history twins in the test set lost at least one role like this.`;
+function setProfileOnly(on, announce = true) {
+  state.profileOnly = on;
+  const b = $("profileOnly");
+  b.setAttribute("aria-pressed", on); b.textContent = on ? "Back to my personalized feed" : "Rank by my profile only";
+  $("b3note").textContent = on ? "Profile-only order" : "Personalized order";
+  if (on) bProfile(listB3); else bPersonal(listB3);
+  if (announce) live(on ? `Ranked by profile only. ${M.title} is back at rank ${M.rank_profile}.` : `Personalized feed. ${M.title} is at rank ${M.rank_B}.`);
+}
+$("profileOnly").addEventListener("click", () => setProfileOnly(!state.profileOnly));
+$("showIt").addEventListener("click", () => {
+  const j = $("rJob"), open = j.hidden; j.hidden = !open;
+  $("showIt").setAttribute("aria-expanded", open); $("showIt").textContent = open ? "Hide it" : "Show it";
+});
+
+/* ---------- scorecard ---------- */
+const ICON = { pass: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+               fail: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>' };
+function checks(b) {
+  const p = PB[b], m0 = PB["0.00"].mobility_exposure_pct[0];
+  return [
+    { key: "TEG_pp", name: "Twin Exposure Gap", def: "Twin A minus Twin B high-value share of Top 10", v: p.TEG_pp, fmt: f2, unit: " pp", show: x => f2(x) + " pp",
+      ci: `95% CI ${f2(p.TEG_pp[1])} to ${f2(p.TEG_pp[2])}`, thrLabel: "Pass if at most", thrUnit: "pp", value: p.TEG_pp[0] },
+    { key: "blindspot_rate_pct", name: "Blindspot Rate", def: "Entry twins who lose a high-value match", v: p.blindspot_rate_pct, show: x => f1(x) + "%",
+      ci: `95% CI ${f1(p.blindspot_rate_pct[1])} to ${f1(p.blindspot_rate_pct[2])}`, thrLabel: "Pass if at most", thrUnit: "%", value: p.blindspot_rate_pct[0] },
+    { key: "mobility_drop_pp", name: "Mobility Exposure", def: "Entry twin's Top 10 one level up (Mid)", v: p.mobility_exposure_pct, show: x => f1(x) + "%",
+      ci: `95% CI ${f1(p.mobility_exposure_pct[1])} to ${f1(p.mobility_exposure_pct[2])}`, ci2: m0 - p.mobility_exposure_pct[0] > 0.005 ? `Down ${f1(m0 - p.mobility_exposure_pct[0])} pp vs ${f1(m0)}% profile only` : "Same as profile only",
+      thrLabel: "Pass if the drop is at most", thrUnit: "pp", value: Math.max(0, m0 - p.mobility_exposure_pct[0]) },
+    { key: "compat_cost_pct", name: "Compatibility guard", def: "Drop in Top 10 profile match vs profile only", v: p.compat_cost_pct, show: x => f2(x) + "%",
+      ci: `95% CI ${f2(p.compat_cost_pct[1])} to ${f2(p.compat_cost_pct[2])}`, thrLabel: "Pass if at most", thrUnit: "%", value: p.compat_cost_pct[0] },
+  ];
+}
+const fmtThr = (k, x) => (k === "compat_cost_pct" ? String(+x) : k === "blindspot_rate_pct" ? f1(x) : f2(x));
+const passes = c => c.value <= state.thr[c.key] + 1e-9;
+function buildScore(prefix, editable) {
+  const host = $("checks" + prefix);
+  host.innerHTML = "";
+  for (const c of checks(state.beta)) {
+    const el = document.createElement("div"); el.className = "check"; el.dataset.check = c.key;
+    el.innerHTML = `<div><h3>${c.name}</h3><p class="def">${c.def}</p>${editable
+      ? `<label class="thr">${c.thrLabel} <input type="number" step="0.01" min="0" inputmode="decimal" data-thr="${c.key}" value="${fmtThr(c.key, state.thr[c.key])}" aria-label="${c.name} pass line, ${c.thrUnit}"> ${c.thrUnit}</label>`
+      : `<p class="def thrtxt"></p>`}</div>
+      <div class="mid"><p class="val num" data-val></p><p class="ci num" data-ci></p>${c.key === "mobility_drop_pp" ? '<p class="ci num" data-ci2></p>' : ""}</div>
+      <span class="badge" data-badge></span>`;
+    host.appendChild(el);
+  }
+  host.querySelectorAll("input[data-thr]").forEach(inp => inp.addEventListener("input", () => {
+    const v = parseFloat(inp.value);
+    if (!Number.isNaN(v)) { state.thr[inp.dataset.thr] = v; renderScores(false); }
+  }));
+  const s = $("slider" + prefix);
+  s.innerHTML = `<div class="top"><label for="beta${prefix}">History weight in the ranking</label><span class="bv num" id="bv${prefix}"></span><span class="ctx num" id="ctx${prefix}"></span></div>
+    <input type="range" id="beta${prefix}" min="0" max="${D.meta.betas.length - 1}" step="1" aria-describedby="ctx${prefix}">
+    <div class="ticks" aria-hidden="true">${D.meta.betas.map(b => `<span>${b}</span>`).join("")}</div>
+    <p class="summary" id="sum${prefix}" style="margin-top:8px"></p>`;
+  const r = $("beta" + prefix);
+  r.addEventListener("input", () => { state.beta = D.meta.betas[+r.value]; renderScores(true); live(`History weight ${state.beta}. ${$("sum" + prefix).textContent}`); });
+}
+let shown = {};
+function renderKey(prefix, animate) {
+  const p = PB[state.beta], k = $("key" + prefix);
+  if (!k.dataset.built) {
+    k.innerHTML = `<p class="lab">Twin Exposure Gap at this history weight</p><div class="big num" data-key></div><p class="lab num" data-keyci></p>
+      <div class="split"><div><p>Twin A (senior history)</p><span class="v a num" data-ha></span></div><div><p>Twin B (entry history)</p><span class="v b num" data-hb></span></div><div><p>Placebo, same history</p><span class="v num" data-pl></span></div></div>
+      <div class="bars" role="group" aria-label="Twin Exposure Gap at each history weight. Choose one to replay the audit.">${D.meta.betas.map(b => `<button type="button" data-bar="${b}" aria-label="History weight ${b}: gap ${f2(PB[b].TEG_pp[0])} pp"><span class="bval">${f2(PB[b].TEG_pp[0])}</span><span class="bfill" style="--h:${(PB[b].TEG_pp[0] / Math.max(...D.meta.betas.map(x => PB[x].TEG_pp[0])) * 100).toFixed(1)}%"></span></button>`).join("")}</div>
+      <div class="bticks" aria-hidden="true">${D.meta.betas.map(b => `<span>${b}</span>`).join("")}</div><p class="lab bcap">Gap at each history weight (beta). Choose a bar to replay the audit.</p>`;
+    k.querySelectorAll("[data-bar]").forEach(btn => btn.addEventListener("click", () => { state.beta = btn.dataset.bar; renderScores(true); live(`History weight ${state.beta}. ${$("sum" + prefix).textContent}`); }));
+    k.dataset.built = "1";
+  }
+  const from = shown["key" + prefix] ?? 0, to = p.TEG_pp[0];
+  countTo(k.querySelector("[data-key]"), animate ? from : to, to, animate ? 500 : 0, x => f2(x) + " pp");
+  shown["key" + prefix] = to;
+  k.querySelector("[data-keyci]").textContent = `95% CI ${f2(p.TEG_pp[1])} to ${f2(p.TEG_pp[2])}, ${D.meta.n_pairs.toLocaleString("en-US")} test-set twin pairs`;
+  k.querySelector("[data-ha]").textContent = f1(p.hv_A_pct[0]) + "%";
+  k.querySelector("[data-hb]").textContent = f1(p.hv_B_pct[0]) + "%";
+  k.querySelector("[data-pl]").textContent = f2(p.placebo_pp[0]) + " pp";
+  k.querySelectorAll("[data-bar]").forEach(btn => btn.setAttribute("aria-pressed", btn.dataset.bar === state.beta));
+}
+function renderScores(animate) {
+  for (const prefix of ["P", "E"]) {
+    const host = $("checks" + prefix); let nFail = 0;
+    for (const c of checks(state.beta)) {
+      const el = host.querySelector(`[data-check="${c.key}"]`), ok = passes(c);
+      if (!ok) nFail++;
+      const ve = el.querySelector("[data-val]"), id = prefix + c.key, from = shown[id] ?? 0;
+      countTo(ve, animate ? from : c.v[0], c.v[0], animate ? 450 : 0, c.show); shown[id] = c.v[0];
+      el.querySelector("[data-ci]").textContent = c.ci; const c2 = el.querySelector("[data-ci2]"); if (c2) c2.textContent = c.ci2 || "";
+      const t = el.querySelector(".thrtxt"); if (t) t.textContent = `${c.thrLabel} ${fmtThr(c.key, state.thr[c.key])}${c.thrUnit === "%" ? "%" : " pp"}`;
+      const bd = el.querySelector("[data-badge]");
+      bd.className = "badge " + (ok ? "pass" : "fail"); bd.innerHTML = ICON[ok ? "pass" : "fail"] + (ok ? "Pass" : "Fail");
+      bd.setAttribute("aria-label", `${c.name}: ${ok ? "Pass" : "Fail"}`);
+    }
+    const i = D.meta.betas.indexOf(state.beta);
+    $("beta" + prefix).value = i;
+    $("beta" + prefix).setAttribute("aria-valuetext", `History weight ${state.beta}${state.beta === "0.00" ? ", profile only" : state.beta === D.meta.beta_default ? ", Phase 1 setting" : ""}`);
+    $("bv" + prefix).textContent = `beta = ${state.beta}${state.beta === "0.00" ? " (profile only)" : state.beta === D.meta.beta_default ? " (Phase 1 setting)" : ""}`;
+    const h = PB[state.beta].hit10_pct[0], h0 = PB["0.00"].hit10_pct[0];
+    $("ctx" + prefix).textContent = `Personalization value: Hit@10 ${f1(h)}% vs ${f1(h0)}% profile only`;
+    $("sum" + prefix).textContent = nFail ? `${nFail} of 4 checks fail at beta = ${state.beta}` : `All 4 checks pass at beta = ${state.beta}`;
+    renderKey(prefix, animate);
+  }
+}
+
+/* ---------- explore: fixes, twins, method ---------- */
+function buildExplore() {
+  const C = D.fix_criteria;
+  const mk = (ok, txt) => `<span class="mk ${ok ? "p" : "f"}">${txt} ${ok ? "Pass" : "Fail"}</span>`;
+  $("fxTable").innerHTML = `<caption class="sr">Fixes against pre-registered tests</caption><thead><tr><th scope="col">Fix (setting tuned on the tune half)</th><th scope="col">Gap cut, at least ${C.gap_cut_min_pct}%</th><th scope="col">Compatibility cost, at most ${C.compat_max_pct}%</th><th scope="col">Hit@10 gain kept, at least ${C.hit10_kept_min_pct}%</th><th scope="col">Verdict</th></tr></thead><tbody>` +
+    D.fixes.map(x => `<tr data-fix="${x.name}"><th scope="row">${x.name}<span class="st">${x.setting}</span></th><td>${mk(x.pass_gap, f1(x.gap_cut_pct) + "%")}</td><td>${mk(x.pass_compat, f2(x.compat_cost_pct) + "%")}</td><td>${mk(x.pass_hit, f1(x.hit10_kept_pct) + "%")}</td><td><span class="badge ${x.pass ? "pass" : "fail"}">${ICON[x.pass ? "pass" : "fail"]}${x.pass ? "Pass" : "Fail"}</span></td></tr>`).join("") + "</tbody>";
+  const mini = (title, cls, cards, rk, extra = "") => `<div class="mini"><h3 class="${cls}">${title}</h3><ol>${cards.map(c =>
+    `<li class="${c.id === M.id ? "hit" : ""}"><span class="r">${rk(c)}</span><span>${c.title}<small class="num">${meta(c)}</small></span></li>`).join("")}${extra}</ol></div>`;
+  $("twSub").textContent = `A real test-set pair, picked by a fixed rule. The highlighted role is #${M.rank_profile} by profile, #${M.rank_A} for Twin A and #${M.rank_B} for Twin B.`;
+  $("feeds3").innerHTML =
+    mini("Profile only (both twins)", "", T.feed_profile, c => c.rank_profile) +
+    mini("Twin A, senior history", "a", T.feed_A, c => c.rank_A) +
+    mini("Twin B, entry history", "b", T.feed_B, c => c.rank_B, `<li class="gapli"><span class="r"></span><span>${gapText}</span></li><li class="hit"><span class="r">${M.rank_B}</span><span>${M.title}<small class="num">${meta(M)}</small></span></li>`);
+  $("exN").textContent = D.meta.n_pairs.toLocaleString("en-US");
+  $("hk1").textContent = D.meta.hist_k; $("hk2").textContent = D.meta.hist_k;
+  $("pool1").textContent = D.meta.pool_size; $("tk1").textContent = D.meta.topk;
+  $("seed").textContent = D.meta.seed; $("boot").textContent = D.meta.bootstrap.toLocaleString("en-US");
+}
+
+/* ---------- navigation ---------- */
+function go(n, opts = {}) {
+  n = Math.max(1, Math.min(4, n));
+  clearAnim(); state.step = n;
+  const s = STEPS[n];
+  $("kicker").textContent = s.k; $("headline").textContent = s.h; $("lede").textContent = s.l;
+  document.querySelectorAll(".scene").forEach(x => x.classList.toggle("on", +x.dataset.scene === n));
+  document.querySelectorAll(".steps button").forEach(b => {
+    const k = +b.dataset.go;
+    if (k === n) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
+    b.classList.toggle("done", k < n);
+  });
+  $("prev").disabled = n === 1; $("next").disabled = n === 4;
+  if (n === 1) bMissingSlot(listB1);
+  if (n === 2) playStep2();
+  if (n === 3) setProfileOnly(state.profileOnly, false);
+  if (n === 4) { shown = {}; renderScores(true); }
+  document.body.dataset.step = n;
+  live(`Step ${n} of 4. ${s.h} ${s.l}`);
+}
+function reset() { state.beta = D.meta.beta_default; state.thr = { ...D.defaults }; state.profileOnly = false;
+  $("rJob").hidden = true; $("showIt").textContent = "Show it"; $("showIt").setAttribute("aria-expanded", "false");
+  buildScore("P", false); buildScore("E", true); renderScores(false); go(1); }
+function setMode(m) {
+  state.mode = m; document.body.classList.toggle("explore", m === "explore");
+  document.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === m));
+  if (m === "explore") { renderScores(false); live("Explore mode"); } else go(state.step);
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(+b.dataset.go)));
+document.querySelectorAll("[data-mode]").forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
+$("next").addEventListener("click", () => go(state.step + 1));
+$("prev").addEventListener("click", () => go(state.step - 1));
+document.addEventListener("keydown", e => {
+  if (e.altKey || e.ctrlKey || e.metaKey) return;
+  const tag = (e.target.tagName || "").toLowerCase(), typing = tag === "input" || tag === "textarea";
+  const k = e.key.toLowerCase();
+  if (k === "p" && !typing) { setMode(state.mode === "pitch" ? "explore" : "pitch"); return; }
+  if (k === "f" && !typing) { if (document.fullscreenElement) document.exitFullscreen(); else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {}); return; }
+  if (state.mode !== "pitch" || typing) return;
+  if (k === "r") { reset(); return; }
+  if (e.key === "ArrowRight" || (e.key === " " && tag !== "button")) { e.preventDefault(); go(state.step + 1); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); go(state.step - 1); }
+});
+setTimeout(() => $("hint").classList.add("gone"), 5000);
+
+buildExplore(); buildScore("P", false); buildScore("E", true); renderScores(false); go(1);
+</script>
+</body>
+</html>
