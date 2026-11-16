@@ -1,0 +1,14 @@
+{
+  "gap_by_beta.png": {
+    "min_font_pt": 10.0,
+    "dpi": 220.0
+  },
+  "heldout_hit10.png": {
+    "min_font_pt": 10.0,
+    "dpi": 220.0
+  },
+  "tradeoff_pdf.png": {
+    "min_font_pt": 10.0,
+    "dpi": 220.0
+  }
+}
